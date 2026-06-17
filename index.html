@@ -29,26 +29,32 @@
         }
         .control-row {
             display: flex;
-            align-items: flex-end; /* Alinha todos os controles pela base */
-            margin: 10px 0;
-            gap: 20px;
+            align-items: flex-end;
+            margin: 8px 0;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .control-group {
             display: flex;
-            align-items: flex-end; /* Alinha cada grupo pela base */
-            gap: 8px; /* Aumenta o espaçamento entre elementos do grupo */
-            min-width: 320px; /* Garante largura mínima para alinhamento */
+            align-items: flex-end;
+            gap: 6px;
+            flex: 1 1 auto;
+            min-width: 0;
         }
         label {
             font-weight: bold;
-            min-width: 200px; /* Aumenta largura mínima para alinhamento */
+            white-space: nowrap;
+            font-size: 13px;
         }
         input[type="range"] {
-            width: 200px;
+            flex: 1 1 80px;
+            min-width: 60px;
+            max-width: 180px;
         }
         input[type="text"] {
-            width: 80px;
-            margin-left: 10px;
+            width: 52px;
+            margin-left: 4px;
+            font-size: 13px;
         }
         select {
             padding: 5px;
@@ -167,14 +173,13 @@
             font-weight: normal;
         }
         .control-group label[for="speed-slider"] {
-            margin-right: 8px;
+            margin-right: 4px;
             min-width: unset;
             width: auto;
         }
         #speed-slider {
-            margin-left: 0;
-            margin-right: 0;
-            width: 140px;
+            width: 100px;
+            flex: 1 1 60px;
         }
         .time-controls label[for="time-slider"] {
             margin-right: 8px;
@@ -182,12 +187,14 @@
             width: auto;
         }
         .reset-btn {
-            width: 200px;
+            width: auto;
             height: 30px;
             background: #dc3545;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 5px 15px;
+            font-size: 13px;
+        }
             font-size: 15px;
         }
     </style>
