@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .controls {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .control-row {
+            display: flex;
+            align-items: flex-end; /* Alinha todos os controles pela base */
+            margin: 10px 0;
+            gap: 20px;
+        }
+        .control-group {
+            display: flex;
+            align-items: flex-end; /* Alinha cada grupo pela base */
+            gap: 8px; /* Aumenta o espaçamento entre elementos do grupo */
+            min-width: 320px; /* Garante largura mínima para alinhamento */
+        }
+        label {
+            font-weight: bold;
+            min-width: 200px; /* Aumenta largura mínima para alinhamento */
+        }
+        input[type="range"] {
+            width: 200px;
+        }
+        input[type="text"] {
+            width: 80px;
+            margin-left: 10px;
+        }
+        select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .play-pause-btn {
+            background: #28a745;
+            min-width: 80px;
+        }
+        .play-pause-btn:hover {
+            background: #218838;
+        }
+        .animation-controls {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .time-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        #time-slider {
+            flex-grow: 1;
+            margin-left: 0;
+            margin-right: 0;
+            width: 300px;
+        }
+        .output-area {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            padding: 20px;
+            background: white;
+        }
+        .canvas-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1 1 0;
+            min-width: 450px;
+            max-width: 700px;
+        }
+        .canvas-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        #lightcurve {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            margin-bottom: 0;
+        }
+        #animation {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            background: #c0c0c0;
+            margin-bottom: 0;
+        }
+        .value-display {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .time-display {
+            background: #d4edda;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            min-width: 100px;
+            text-align: center;
+        }
+        .impact-value-display {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin-left: 5px;
+        }
+        .star-value-display {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: monospace;
+            margin-left: 1px;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        .control-group label[for="speed-slider"] {
+            margin-right: 8px;
+            min-width: unset;
+            width: auto;
+        }
+        #speed-slider {
+            margin-left: 0;
+            margin-right: 0;
+            width: 140px;
+        }
+        .time-controls label[for="time-slider"] {
+            margin-right: 8px;
+            min-width: unset;
+            width: auto;
+        }
+        #time-slider {
+            margin-left: 0;
+            margin-right: 0;
+            width: 300px;
+        }
+        .reset-btn {
+            width: 200px;
+            height: 30px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="position: absolute; bottom: 70px; left: 30px; z-index: 10;">
+            <button id="btn-pt" style="background:#009440;color:#fff;font-weight:bold;margin-right:5px;">Versão PT-BR</button>
+            <button id="btn-esp" style="background:#ffcb00;color:#333;font-weight:bold;margin-right:5px;">Versión ESP</button>
+            <button id="btn-eng" style="background:#302681;color:#fff;font-weight:bold;">Version ENG</button>
+        </div>
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="radius-slider">Raio do Planeta (R⊕):</label>
+                    <input type="range" id="radius-slider" min="0.2" max="30" step="0.1" value="1.0">
+                    <input type="text" id="radius-input" style="width: 80px; margin-left: 10px;" value="1,0">
+                </div>
+                <div class="control-group">
+                    <label for="star-radius-slider">Raio da Estrela (R☉):</label> 
+                    <input type="range" id="star-radius-slider" min="0.2" max="10" step="0.01" value="1.0">
+                    <input type="text" id="star-radius-input" style="width: 80px; margin-left: 10px;" value="1,00">
+                    <label for="star-radius-slider">Tipo Estelar: <span class="star-value-display" id="star-type-value">G</span></label> 
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="impact-slider">Parâmetro de Impacto (b):</label>
+                    <input type="range" id="impact-slider" min="-0.99" max="0.99" step="0.01" value="0">
+                    <input type="text" id="impact-input" style="width: 80px; margin-left: 10px;" value="0,00">
+                </div>
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="limb-darkening" checked>
+                        Escurecimento de Limbo (LD)
+                    </label>
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="a-slider">Distância orbital (a, UA):</label>
+                    <input type="range" id="a-slider" min="0.01" max="5" step="0.01" value="1.0">
+                    <input type="text" id="a-input" style="width: 80px; margin-left: 10px;" value="1,00">
+                </div>
+            </div>
+            <div class="control-row">
+                <div class="control-group" style="flex-direction:column;align-items:flex-start;min-width:unset;">
+                    <button id="reset-params-btn" class="reset-btn" style="margin-top:4px;">Reiniciar Parâmetros</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="animation-controls">
+            <div class="control-row">
+                <button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()">▶ Início</button>
+                <button onclick="resetAnimation()">⏮ Reiniciar</button>
+                <span class="time-display" id="time-display">Tempo: 0.00 horas</span>
+            </div>
+            <div class="time-controls">
+                <label for="time-slider">Linha do tempo:</label>
+                <input type="range" id="time-slider" min="0" max="299" step="1" value="0">
+                <div class="control-group">
+                    <label for="speed-slider">Velocidade:</label>
+                    <input type="range" id="speed-slider" min="0.25" max="10" step="0.25" value="1">
+                    <input type="text" id="speed-input" style="width: 80px; margin-left: 10px;" value="1,0">
+                </div>
+            </div>
+        </div>
+
+        <div class="output-area">
+            <div class="canvas-block">
+                <div class="canvas-title">Curva de Luz</div>
+                <canvas id="lightcurve"></canvas>
+            </div>
+            <div class="canvas-block">
+                <div class="canvas-title">Interação entre Estrela e Planeta</div>
+                <canvas id="animation"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- UTILITÁRIOS E CONSTANTES ---
+        const starTypes = [
+            { type: "O", color: "#6bb6ff", min: 6.6, max: 10, mass_min: 16, mass_max: 50, temp: 35000, u1: 0.15, u2: 0.05 },
+            { type: "B", color: "#a3c6ff", min: 1.8, max: 6.6, mass_min: 2.1, mass_max: 16, temp: 20000, u1: 0.18, u2: 0.07 },
+            { type: "A", color: "#e6eaff", min: 1.4, max: 1.8, mass_min: 1.4, mass_max: 2.1, temp: 9000, u1: 0.22, u2: 0.09 },
+            { type: "F", color: "#fffbe7", min: 1.15, max: 1.4, mass_min: 1.04, mass_max: 1.4, temp: 7000, u1: 0.25, u2: 0.12 },
+            { type: "G", color: "#fff5b1", min: 0.96, max: 1.15, mass_min: 0.8, mass_max: 1.04, temp: 5800, u1: 0.3, u2: 0.2 },
+            { type: "K", color: "#ffd27a", min: 0.7, max: 0.96, mass_min: 0.45, mass_max: 0.8, temp: 4500, u1: 0.4, u2: 0.25 },
+            { type: "M", color: "#ffb07a", min: 0.2, max: 0.7, mass_min: 0.08, mass_max: 0.45, temp: 3200, u1: 0.5, u2: 0.2 }
+        ];
+        let animationData = null, isPlaying = false, currentFrame = 0, animationInterval = null, animationSpeed = 50;
+
+        // --- FUNÇÕES MATEMATICAS E DE SIMULACAO ---
+        function limb_darkening(mu, u1, u2) {
+            return 1 - u1 * (1 - mu) - u2 * Math.pow(1 - mu, 2);
+        }
+        function linspace(start, stop, num) {
+            const arr = [], step = (stop - start) / (num - 1);
+            for (let i = 0; i < num; i++) arr.push(start + step * i);
+            return arr;
+        }
+        function convertCommaToPoint(value) {
+            return value.toString().replace(',', '.');
+        }
+        function getStarType(radius) {
+            for (let i = 0; i < starTypes.length; i++) {
+                if (radius >= starTypes[i].min && (radius < starTypes[i].max || i === 0)) return starTypes[i];
+            }
+            return starTypes[starTypes.length - 1];
+        }
+        function generate_transit_curve(z_array, rp_rs, u1, u2, use_ld) {
+            const flux = [];
+            for (let i = 0; i < z_array.length; i++) {
+                const z = z_array[i];
+                let delta = 0;
+                if (z >= 1 + rp_rs) delta = 0;
+                else if (z <= 1 - rp_rs) delta = Math.pow(rp_rs, 2);
+                else {
+                    try {
+                        const k0 = Math.acos((z*z + rp_rs*rp_rs - 1) / (2 * z * rp_rs));
+                        const k1 = Math.acos((z*z + 1 - rp_rs*rp_rs) / (2 * z));
+                        const area = rp_rs*rp_rs*k0 + k1 - 0.5 * Math.sqrt(4*z*z - Math.pow(1 + z*z - rp_rs*rp_rs, 2));
+                        delta = area / Math.PI;
+                    } catch (e) { delta = 0; }
+                }
+                if (use_ld) {
+                    const mu = Math.sqrt(1 - Math.pow(Math.min(z, 1), 2));
+                    delta *= limb_darkening(mu, u1, u2);
+                }
+                flux.push((1 - delta) * 100);
+            }
+            return flux;
+        }
+
+        // --- SINCRONIZAÇÃO DE INPUTS E SLIDERS ---
+        function syncInputSlider(inputId, sliderId, min, max, step, toFixed) {
+            const input = document.getElementById(inputId);
+            const slider = document.getElementById(sliderId);
+            slider.addEventListener('input', function() {
+                input.value = parseFloat(this.value).toFixed(toFixed).replace('.', ',');
+                if (animationData) {
+                    if (sliderId === 'speed-slider') {
+                        const speedValue = parseFloat(this.value);
+                        animationSpeed = 50 / speedValue;
+                        if (isPlaying) { stopAnimation(); startAnimation(); }
+                    } else {
+                        runSimulation();
+                    }
+                }
+            });
+            input.addEventListener('blur', function() {
+                let val = parseFloat(convertCommaToPoint(this.value));
+                if (isNaN(val)) val = min;
+                const v = Math.max(min, Math.min(max, val));
+                this.value = v.toFixed(toFixed).replace('.', ',');
+                slider.value = v;
+                if (animationData) {
+                    if (inputId === 'speed-input') {
+                        animationSpeed = 50 / v;
+                        if (isPlaying) { stopAnimation(); startAnimation(); }
+                    } else {
+                        runSimulation();
+                    }
+                }
+            });
+            input.addEventListener('keypress', function(e) { if (e.key === 'Enter') this.blur(); });
+        }
+
+        // --- CONTROLES DE ANIMAÇÃO ---
+        function togglePlayPause() { isPlaying ? pauseAnimation() : playAnimation(); }
+        function playAnimation() {
+            if (!animationData) return;
+            isPlaying = true;
+            updatePlayPauseButton();
+            startAnimation();
+            document.getElementById('play-pause-btn').style.display = '';
+            document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
+        }
+        function pauseAnimation() {
+            isPlaying = false;
+            updatePlayPauseButton();
+            stopAnimation();
+        }
+        function resetAnimation() {
+            pauseAnimation();
+            currentFrame = 0;
+            document.getElementById('time-slider').value = 0;
+            updateFrame();
+            document.getElementById('play-pause-btn').style.display = '';
+            document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
+        }
+        function startAnimation() {
+            if (animationInterval) clearInterval(animationInterval);
+            animationInterval = setInterval(() => {
+                currentFrame++;
+                if (currentFrame >= animationData.x.length) {
+                    currentFrame = animationData.x.length - 1;
+                    pauseAnimation();
+                    document.getElementById('play-pause-btn').style.display = 'none';
+                    document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
+                    return;
+                }
+                document.getElementById('time-slider').value = currentFrame;
+                updateFrame();
+            }, animationSpeed);
+        }
+        function stopAnimation() {
+            if (animationInterval) { clearInterval(animationInterval); animationInterval = null; }
+        }
+        function updatePlayPauseButton() {
+            document.getElementById('play-pause-btn').textContent = LANGS[LANG].pause;
+            if (!isPlaying) document.getElementById('play-pause-btn').textContent = LANGS[LANG].play;
+        }
+        function updateLimbDarkeningLabel() {
+            const checkbox = document.getElementById('limb-darkening');
+            const label = checkbox.parentNode;
+            for (let i = 0; i < label.childNodes.length; i++) {
+                const node = label.childNodes[i];
+                if (node.nodeType === 3 && node.textContent.trim().length > 0) {
+                    node.textContent = ' ' + LANGS[LANG].limb_darkening;
+                    break;
+                }
+            }
+        }
+        function updateTimeDisplay() {
+            if (!animationData) return;
+            const T14 = animationData.T14_horas;
+            const k = animationData.rp_rs;
+            const impact = animationData.impact;
+            const x1 = -Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
+            const x2 =  Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
+            let idx1 = 0, idx2 = animationData.x.length - 1;
+            for (let i = 0; i < animationData.x.length; i++) {
+                if (animationData.x[i] >= x1) { idx1 = i; break; }
+            }
+            for (let i = animationData.x.length - 1; i >= 0; i--) {
+                if (animationData.x[i] <= x2) { idx2 = i; break; }
+            }
+            let t_display = 0;
+            if (currentFrame < idx1) {
+                t_display = 0;
+            } else if (currentFrame > idx2) {
+                t_display = T14;
+            } else {
+                const frac = (currentFrame - idx1) / (idx2 - idx1);
+                t_display = frac * T14;
+            }
+            document.getElementById('time-display').textContent = LANGS[LANG].time.replace('{t}', t_display.toFixed(2));
+            if (document.getElementById('t14-display')) {
+                document.getElementById('t14-display').textContent = `T₁₄: ${T14.toFixed(3)} h`;
+            }
+        }
+        function updateFrame() {
+            if (!animationData) return;
+            updateTimeDisplay();
+            drawAnimationFrame(currentFrame);
+            drawLightCurveProgress(currentFrame);
+        }
+
+        // --- SIMULAÇÃO PRINCIPAL ---
+        function runSimulation() {
+            const rp_re = parseFloat(convertCommaToPoint(document.getElementById('radius-input').value));
+            const rstar = parseFloat(convertCommaToPoint(document.getElementById('star-radius-input').value));
+            const a_ua = parseFloat(convertCommaToPoint(document.getElementById('a-input').value));
+            const starType = getStarType(rstar);
+            const ms = (starType.mass_min + starType.mass_max) / 2;
+            const use_ld = document.getElementById('limb-darkening').checked;
+            const impact = parseFloat(convertCommaToPoint(document.getElementById('impact-input').value));
+            const rp_rsun = rp_re * 0.0091577;
+            const rp_rs = rp_rsun / rstar;
+            const AU_in_Rsun = 215.032;
+            const G = 6.67430e-11;
+            const Msun = 1.98847e30;
+            const Rsun = 6.957e8;
+            const a_rsun = a_ua * AU_in_Rsun;
+            const a_m = a_ua * 1.495978707e11;
+            const mstar_kg = ms * Msun;
+            const P_s = 2 * Math.PI * Math.sqrt(Math.pow(a_m, 3) / (G * mstar_kg));
+            const P_dias = P_s / 86400;
+            const P_horas = P_s / 3600;
+            const incl = Math.acos(impact * rstar / a_rsun);
+            const k = rp_rs;
+            const numerador = rstar / a_rsun * Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
+            const denominador = Math.sin(incl);
+            let T14_horas = 0;
+            if (denominador > 0 && numerador > 0 && numerador / denominador <= 1) {
+                T14_horas = (P_horas / Math.PI) * Math.asin(numerador / denominador);
+            } else {
+                T14_horas = 0;
+            }
+            const x = linspace(-2, 2, 300);
+            const z = x.map(val => Math.sqrt(val*val + impact*impact));
+            const flux = generate_transit_curve(z, rp_rs, starType.u1, starType.u2, use_ld);
+            const x1 = -Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
+            const x2 =  Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
+            const idx1 = x.findIndex(val => val >= x1);
+            const idx2 = x.findIndex(val => val >= x2);
+            const v_rstar_dia = 2 * Math.PI * a_rsun / P_dias;
+            const v_rstar_hora = v_rstar_dia / 24;
+            const T14_horas_geom = (x2 - x1) / v_rstar_hora;
+            const escala_tempo = T14_horas / T14_horas_geom;
+            const time_horas = x.map(val => val / v_rstar_hora);
+            const time_days = time_horas.map(h => h / 24);
+            animationData = {
+                x, flux, time_days, time_horas, rp_rs, star_type: starType.type, rp_re, use_ld, impact, rstar,
+                star_color: starType.color, star_data: starType, a_ua, a_rsun, P_dias, T14_horas
+            };
+            document.getElementById('time-slider').max = x.length - 1;
+            plotLightCurve(time_days, flux, starType.type, rp_re, use_ld);
+            resetAnimation();
+        }
+
+        // --- DESENHO DA ANIMAÇÃO E CURVA DE LUZ ---
+        function drawAnimationFrame(frameIndex) {
+            if (!animationData) return;
+            const canvas = document.getElementById('animation');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            const centerX = canvas.width / 2, centerY = canvas.height / 2;
+            const starRadius = Math.min(canvas.height / 3, canvas.width / 5);
+            const planetRadius = Math.max(starRadius * animationData.rp_rs, 3);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Desenha a estrela (com ou sem LD)
+            if (animationData.use_ld) {
+                const steps = 50;
+                for (let r = steps; r > 0; r--) {
+                    const frac = r / steps;
+                    const mu = Math.sqrt(1 - frac * frac);
+                    let intensity = 1 - animationData.star_data.u1 * (1 - mu) - animationData.star_data.u2 * Math.pow(1 - mu, 2);
+                    intensity = Math.max(0.4, Math.min(1, intensity));
+                    intensity = Math.pow(intensity, 0.9);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, starRadius * frac, 0, 2 * Math.PI);
+                    const baseColor = animationData.star_color;
+                    let r_val, g_val, b_val;
+                    if (baseColor.startsWith('#')) {
+                        r_val = parseInt(baseColor.slice(1, 3), 16);
+                        g_val = parseInt(baseColor.slice(3, 5), 16);
+                        b_val = parseInt(baseColor.slice(5, 7), 16);
+                    } else { r_val = 255; g_val = 220; b_val = 100; }
+                    const final_r = Math.round(r_val * intensity);
+                    const final_g = Math.round(g_val * intensity);
+                    const final_b = Math.round(b_val * intensity);
+                    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, starRadius * frac);
+                    gradient.addColorStop(0, `rgb(${final_r}, ${final_g}, ${final_b})`);
+                    gradient.addColorStop(1, `rgb(${Math.round(final_r * 0.8)}, ${Math.round(final_g * 0.8)}, ${Math.round(final_b * 0.8)})`);
+                    ctx.fillStyle = gradient;
+                    ctx.globalAlpha = 1.0;
+                    ctx.fill();
+                }
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
+                ctx.strokeStyle = `rgba(0.1, 0.2, 0.5, 0.15)`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            } else {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
+                ctx.fillStyle = animationData.star_color;
+                ctx.globalAlpha = 2.0;
+                ctx.fill();
+            }
+            // Linha da trajetória
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#666666';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(centerX - starRadius * 2, centerY + animationData.impact * starRadius);
+            ctx.lineTo(centerX + starRadius * 2, centerY + animationData.impact * starRadius);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // Desenha o planeta na posição atual (toda a trajetória, antes, durante e depois do trânsito)
+            const x_position = animationData.x[frameIndex];
+            const planetX = centerX + x_position * starRadius;
+            const planetY = centerY + animationData.impact * starRadius;
+            ctx.beginPath();
+            ctx.arc(planetX, planetY, planetRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'black';
+            ctx.fill();
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            // Indicador de trânsito baseado no fluxo atual
+            const currentFlux = animationData.flux[frameIndex];
+            if (currentFlux < 99.999) {
+                ctx.strokeStyle = '#ff6b6b';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = '#ff6b6b';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(LANGS[LANG].transit_detected, canvas.width / 2, canvas.height - 5);
+            }
+        }
+        function drawLightCurveProgress(currentFrameIndex) {
+            if (!animationData) return;
+            const canvas = document.getElementById('lightcurve');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            const margin = {left: 60, right: 20, top: 30, bottom: 70}; // aumenta o bottom para 70 para dar espaço ao texto
+            const width = canvas.width - margin.left - margin.right;
+            const height = canvas.height - margin.top - margin.bottom;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const minFlux = Math.min(...animationData.flux) - 0.05;
+            const maxFlux = 100.05;
+            function scaleX(val) {
+                const t0 = animationData.time_days[0];
+                const minTime = 0;
+                const maxTime = animationData.time_days[animationData.time_days.length - 1] - t0;
+                return margin.left + (val - t0) / (maxTime - minTime) * width;
+            }
+            function scaleY(val) {
+                return margin.top + (maxFlux - val) / (maxFlux - minFlux) * height;
+            }
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top);
+            ctx.lineTo(margin.left, margin.top + height);
+            ctx.lineTo(margin.left + width, margin.top + height);
+            ctx.stroke();
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 0.5;
+            for (let i = 1; i < 10; i++) {
+                const y = margin.top + (height * i) / 10;
+                ctx.beginPath();
+                ctx.moveTo(margin.left, y);
+                ctx.lineTo(margin.left + width, y);
+                ctx.stroke();
+            }
+            if (currentFrameIndex >= 0) {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let hasStarted = false;
+                for (let i = 0; i <= currentFrameIndex; i++) {
+                    const x = scaleX(animationData.time_days[i]);
+                    const y = scaleY(animationData.flux[i]);
+                    if (!hasStarted) { ctx.moveTo(x, y); hasStarted = true; }
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+            }
+            ctx.fillStyle = '#000';
+            ctx.font = '13px Arial';
+            ctx.textAlign = 'center';
+            // Unifica o uso dos placeholders para todos os idiomas
+            let title = LANGS[LANG].params_title
+                .replace('{star_radius}', animationData.rstar)
+                .replace('{star}', animationData.star_type)
+                .replace('{planet_radius}', animationData.rp_re)
+                .replace('{ld}', animationData.use_ld ? LANGS[LANG].with_ld : LANGS[LANG].without_ld);
+            ctx.fillText(title, canvas.width / 2, canvas.height - 8); // move o título dos parâmetros para cima
+            ctx.font = '13px Arial';
+            ctx.fillText(LANGS[LANG].time_label, canvas.width / 1.1, canvas.height - 55); // move o label do tempo para cima
+            ctx.save();
+            ctx.translate(15, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(LANGS[LANG].flux_label, 0, 38);
+            ctx.restore();
+            if (currentFrameIndex >= 0) {
+                let currentFlux = animationData.flux[currentFrameIndex];
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                // Corrige NaN ou infinito para planetas grandes
+                let currentFluxDisplay = (isFinite(currentFlux) && !isNaN(currentFlux)) ? currentFlux.toFixed(3) : '0.000';
+                ctx.fillText(`${LANGS[LANG].min_flux.replace('{val}', currentFluxDisplay)}`, margin.left + 10, margin.top + 298);
+                if (currentFrameIndex === animationData.flux.length - 1) {
+                    let minFlux = Math.min(...animationData.flux);
+                    let profundidadeMaxima = 100 - minFlux;
+                    // Corrige caso de planeta maior que a estrela (bloqueio total ou mais)
+                    if (!isFinite(profundidadeMaxima) || profundidadeMaxima < 0 || profundidadeMaxima > 100) {
+                        profundidadeMaxima = 100;
+                    }
+                    ctx.fillText(LANGS[LANG].planet_blocked.replace('{val}', profundidadeMaxima.toFixed(3)), margin.left + 8, margin.top + 330);
+                }
+            }
+        }
+        function plotLightCurve() { drawLightCurveProgress(-1); }
+
+        // --- TEXTOS MULTI-IDIOMA ---
+        const LANGS = {
+            pt: {
+                planet_radius: "Raio do Planeta (R⊕):",
+                star_radius: "Raio da Estrela (R☉):",
+                star_type: "Tipo Estelar:",
+                impact: "Parâmetro de impacto (b):",
+                limb_darkening: "Escurecimento de Limbo (LD)",
+                a_label: "Distância orbital (a, UA):", // NOVO
+                play: "▶ Início",
+                pause: "⏸ Parar",
+                reset: "⏮ Reiniciar",
+                timeline: "Linha do tempo:",
+                speed: "Velocidade:",
+                lightcurve: "Curva de Luz",
+                animation: "Interação entre Estrela e Planeta",
+                transit_detected: "TRÂNSITO DETECTADO",
+                time: "Tempo de Trânsito: {t} horas",
+                time_label: "Tempo (horas)",
+                flux_label: "Fluxo Relativo (%)",
+                sim_params: "Parâmetros da Simulação:",
+                star_radius_val: "Raio da Estrela: {val} R☉ (Tipo {type})",
+                planet_radius_val: "Raio do Planeta: {val} R⊕",
+                impact_val: "Parâmetro de Impacto: {val}",
+                transit_depth: "Profundidade do Trânsito: {val}%",
+                min_flux: "Fluxo Mínimo: {val}%",
+                planet_blocked: "O planeta bloqueou {val}% do fluxo total da estrela",
+                with_ld: "(com LD)",
+                without_ld: "(sem LD)",
+                params_title: "Parâmetros da Simulação: Estrela com Raio = {star_radius} R☉ (Tipo {star}) com Planeta de Raio = {planet_radius} R⊕ {ld}",
+                reset_params: "Reiniciar Parâmetros",
+            },
+            en: {
+                planet_radius: "Planet Radius (R⊕):",
+                star_radius: "Star Radius (R☉):",
+                star_type: "Spectral Type:",
+                impact: "Impact Parameter (b):",
+                limb_darkening: "Limb Darkening (LD)",
+                a_label: "Orbital Distance (a, AU):", // NEW
+                play: "▶ Play",
+                pause: "⏸ Pause",
+                reset: "⏮ Reset",
+                timeline: "Timeline:",
+                speed: "Speed:",
+                lightcurve: "Light Curve",
+                animation: "Star-Planet Interaction",
+                transit_detected: "TRANSIT DETECTED",
+                time: "Transit Time: {t} hours",
+                time_label: "Time (hours)",
+                flux_label: "Relative Flux (%)",
+                sim_params: "Simulation Parameters:",
+                star_radius_val: "Star Radius: {val} R☉ (Type {type})",
+                planet_radius_val: "Planet Radius: {val} R⊕",
+                impact_val: "Impact Parameter: {val}",
+                transit_depth: "Transit Depth: {val}%",
+                min_flux: "Min. Flux: {val}%",
+                planet_blocked: "The planet blocked {val}% of the star's total flux",
+                with_ld: "(with LD)",
+                without_ld: "(without LD)",
+                params_title: "Simulation Parameters: Star with Radius = {radius} R☉ (Star Type {star}) with Planet Radius = {radius} R⊕ {ld}",
+                reset_params: "Reset Parameters",
+            },
+            es: {
+                planet_radius: "Radio del Planeta (R⊕):",
+                star_radius: "Radio de la Estrella (R☉):",
+                star_type: "Tipo Espectral:",
+                impact: "Parámetro de impacto (b):",
+                limb_darkening: "Oscurecimiento de Borde (LD)",
+                a_label: "Distancia orbital (a, UA):", // NUEVO
+                play: "▶ Reproducir",
+                pause: "⏸ Pausa",
+                reset: "⏮ Reiniciar",
+                timeline: "Línea de tiempo:",
+                speed: "Velocidad:",
+                lightcurve: "Curva de Luz",
+                animation: "Interacción Estrella-Planeta",
+                transit_detected: "TRÁNSITO DETECTADO",
+                time: "Tiempo de Tránsito: {t} horas",
+                time_label: "Tiempo (horas)",
+                flux_label: "Flujo Relativo (%)",
+                sim_params: "Parámetros de la Simulación:",
+                star_radius_val: "Radio de la Estrella: {val} R☉ (Tipo {type})",
+                planet_radius_val: "Radio del Planeta = {val} R⊕",
+                impact_val: "Parámetro de Impacto: {val}",
+                transit_depth: "Profundidade del Tránsito: {val}%",
+                min_flux: "Flujo Mínimo: {val}%",
+                planet_blocked: "El planeta bloqueó el {val}% del flujo total de la estrella",
+                with_ld: "(con LD)",
+                without_ld: "(sin LD)",
+                params_title: "Parámetros de Simulación: Estrella con Radio = {radius} R☉ (Tipo {star}) con Planeta de Radio = {radius} R⊕ {ld}",
+                reset_params: "Restablecer Parámetros",
+            }
+        };
+        let LANG = 'pt';
+        function setLang(lang) {
+            LANG = lang;
+            pauseAnimation();
+            document.querySelector("label[for='radius-slider']").textContent = LANGS[lang].planet_radius;
+            document.querySelector("label[for='star-radius-slider']").textContent = LANGS[lang].star_radius;
+            document.getElementById('star-type-value').parentNode.childNodes[0].textContent = LANGS[lang].star_type + ' ';
+            document.querySelector("label[for='impact-slider']").textContent = LANGS[lang].impact;
+            document.querySelector("label[for='a-slider']").textContent = LANGS[lang].a_label;
+            updateLimbDarkeningLabel();
+            updatePlayPauseButton();
+            document.querySelector(".animation-controls button:not(.play-pause-btn)").textContent = LANGS[lang].reset;
+            document.querySelector(".time-controls label[for='time-slider']").textContent = LANGS[lang].timeline;
+            document.querySelector(".time-controls label[for='speed-slider']").textContent = LANGS[lang].speed;
+            document.querySelector(".canvas-block .canvas-title").textContent = LANGS[lang].lightcurve;
+            document.querySelectorAll(".canvas-block .canvas-title")[1].textContent = LANGS[lang].animation;
+            document.getElementById('reset-params-btn').textContent = LANGS[lang].reset_params;
+            drawLightCurveProgress(-1);
+            updateTimeDisplay();
+            updateFrame();
+        }
+
+        // --- INICIALIZAÇÃO E EVENTOS ---
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btn-eng').onclick = function() { setLang('en'); };
+            document.getElementById('btn-esp').onclick = function() { setLang('es'); };
+            document.getElementById('btn-pt').onclick = function() { setLang('pt'); };
+            syncInputSlider('radius-input', 'radius-slider', 0.2, 30, 0.1, 1);
+            syncInputSlider('star-radius-input', 'star-radius-slider', 0.2, 10, 0.01, 2);
+            syncInputSlider('impact-input', 'impact-slider', -0.99, 0.99, 0.01, 2);
+            syncInputSlider('a-input', 'a-slider', 0.01, 5, 0.01, 2);
+            syncInputSlider('speed-input', 'speed-slider', 0.25, 10, 0.25, 1);
+            document.getElementById('time-slider').addEventListener('input', function() {
+                currentFrame = parseInt(this.value); updateFrame();
+            });
+            document.getElementById('limb-darkening').addEventListener('change', function() {
+                if (animationData) { runSimulation(); }
+            });
+            document.getElementById('star-radius-slider').addEventListener('input', function() {
+                const rstar = parseFloat(this.value);
+                document.getElementById('star-type-value').textContent = getStarType(rstar).type;
+            });
+            updateLimbDarkeningLabel();
+            document.getElementById('reset-params-btn').onclick = resetParametersToDefault;
+            runSimulation();
+        });
+
+        // --- FUNÇÕES AUXILIARES DE BOTÕES ---
+        function showOnlyResetButton() {
+            document.getElementById('play-pause-btn').style.display = 'none';
+            document.querySelector(".animation-controls button:not(.play-pause-btn)").style.display = '';
+        }
+        function showPlayPauseAndResetButtons() {
+            document.getElementById('play-pause-btn').style.display = '';
+            document.querySelector(".animation-controls button:not(.play-pause-btn)").style.display = '';
+        }
+        function resetParametersToDefault() {
+            document.getElementById('radius-slider').value = 1.0;
+            document.getElementById('radius-input').value = '1,0';
+            document.getElementById('star-radius-slider').value = 1.0;
+            document.getElementById('star-radius-input').value = '1,00';
+            document.getElementById('impact-slider').value = 0;
+            document.getElementById('impact-input').value = '0,00';
+            document.getElementById('a-slider').value = 1.0;
+            document.getElementById('a-input').value = '1,00';
+            document.getElementById('limb-darkening').checked = true;
+            document.getElementById('speed-slider').value = 1;
+            document.getElementById('speed-input').value = '1,0';
+            document.getElementById('star-type-value').textContent = getStarType(1.0).type;
+            runSimulation();
+        }
+    </script>
+</body>
+</html>
