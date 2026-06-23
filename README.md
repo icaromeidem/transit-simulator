@@ -98,8 +98,8 @@ Se você utilizar este simulador em pesquisa, ensino ou material didático, por 
   title   = {Simulador interativo de trânsitos de exoplanetas como ferramenta didática para o ensino de Física e Astronomia},
   journal = {Revista Brasileira de Ensino de Física},
   year    = {2026},
-  volume  = {48},
-  note    = {No prelo},
+  volume  = {},
+  note    = {In prep},
   url     = {https://github.com/icaromeidem/transit-simulator}
 }
 ```
