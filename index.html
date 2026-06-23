@@ -19,8 +19,31 @@
         }
         .lang-bar {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
             gap: 8px;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .lang-bar-left {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tutorial-btn {
+            background: #495057;
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .tutorial-btn:hover {
+            background: #343a40;
         }
         .controls {
             background: #f8f9fa;
@@ -195,9 +218,12 @@
 <body>
     <div class="container">
         <div class="lang-bar">
-            <button id="btn-pt" style="background:#009440;color:#fff;font-weight:bold;">Versão PT-BR</button>
-            <button id="btn-esp" style="background:#ffcb00;color:#333;font-weight:bold;">Versión ESP</button>
-            <button id="btn-eng" style="background:#302681;color:#fff;font-weight:bold;">Version ENG</button>
+            <div class="lang-bar-left">
+                <button id="btn-pt" style="background:#009440;color:#fff;font-weight:bold;">Versão PT-BR</button>
+                <button id="btn-esp" style="background:#ffcb00;color:#333;font-weight:bold;">Versión ESP</button>
+                <button id="btn-eng" style="background:#302681;color:#fff;font-weight:bold;">Version ENG</button>
+            </div>
+            <a href="tutorial.html" class="tutorial-btn" id="tutorial-link">Tutorial</a>
         </div>
         <div class="controls">
             <div class="control-row">
@@ -595,7 +621,7 @@
             const ctx = canvas.getContext('2d');
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
-            const margin = {left: 60, right: 20, top: 30, bottom: 70}; // aumenta o bottom para 70 para dar espaço ao texto
+            const margin = {left: 60, right: 20, top: 30, bottom: 70}; 
             const width = canvas.width - margin.left - margin.right;
             const height = canvas.height - margin.top - margin.bottom;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -648,9 +674,9 @@
                 .replace('{star}', animationData.star_type)
                 .replace('{planet_radius}', animationData.rp_re)
                 .replace('{ld}', animationData.use_ld ? LANGS[LANG].with_ld : LANGS[LANG].without_ld);
-            ctx.fillText(title, canvas.width / 2, canvas.height - 8); // move o título dos parâmetros para cima
+            ctx.fillText(title, canvas.width / 2, canvas.height - 8); 
             ctx.font = '13px Arial';
-            ctx.fillText(LANGS[LANG].time_label, canvas.width / 1.1, canvas.height - 55); // move o label do tempo para cima
+            ctx.fillText(LANGS[LANG].time_label, canvas.width / 1.1, canvas.height - 55); 
             ctx.save();
             ctx.translate(15, canvas.height / 2);
             ctx.rotate(-Math.PI / 2);
@@ -661,13 +687,11 @@
                 ctx.fillStyle = '#000';
                 ctx.font = '12px Arial';
                 ctx.textAlign = 'left';
-                // Corrige NaN ou infinito para planetas grandes
                 let currentFluxDisplay = (isFinite(currentFlux) && !isNaN(currentFlux)) ? currentFlux.toFixed(3) : '0.000';
                 ctx.fillText(`${LANGS[LANG].min_flux.replace('{val}', currentFluxDisplay)}`, margin.left + 10, margin.top + 298);
                 if (currentFrameIndex === animationData.flux.length - 1) {
                     let minFlux = Math.min(...animationData.flux);
                     let profundidadeMaxima = 100 - minFlux;
-                    // Corrige caso de planeta maior que a estrela (bloqueio total ou mais)
                     if (!isFinite(profundidadeMaxima) || profundidadeMaxima < 0 || profundidadeMaxima > 100) {
                         profundidadeMaxima = 100;
                     }
@@ -685,7 +709,7 @@
                 star_type: "Tipo Estelar:",
                 impact: "Parâmetro de impacto (b):",
                 limb_darkening: "Escurecimento de Limbo (LD)",
-                a_label: "Distância orbital (a, UA):", // NOVO
+                a_label: "Distância orbital (a, UA):",
                 play: "▶ Início",
                 pause: "⏸ Parar",
                 reset: "⏮ Reiniciar",
@@ -708,6 +732,7 @@
                 without_ld: "(sem LD)",
                 params_title: "Parâmetros da Simulação: Estrela com Raio = {star_radius} R☉ (Tipo {star}) com Planeta de Raio = {planet_radius} R⊕ {ld}",
                 reset_params: "Reiniciar Parâmetros",
+                tutorial_label: "Tutorial",
             },
             en: {
                 planet_radius: "Planet Radius (R⊕):",
@@ -715,7 +740,7 @@
                 star_type: "Spectral Type:",
                 impact: "Impact Parameter (b):",
                 limb_darkening: "Limb Darkening (LD)",
-                a_label: "Orbital Distance (a, AU):", // NEW
+                a_label: "Orbital Distance (a, AU):",
                 play: "▶ Play",
                 pause: "⏸ Pause",
                 reset: "⏮ Reset",
@@ -738,6 +763,7 @@
                 without_ld: "(without LD)",
                 params_title: "Simulation Parameters: Star with Radius = {star_radius} R☉ (Star Type {star}) with Planet Radius = {planet_radius} R⊕ {ld}",
                 reset_params: "Reset Parameters",
+                tutorial_label: "Tutorial",
             },
             es: {
                 planet_radius: "Radio del Planeta (R⊕):",
@@ -745,7 +771,7 @@
                 star_type: "Tipo Espectral:",
                 impact: "Parámetro de impacto (b):",
                 limb_darkening: "Oscurecimiento de Borde (LD)",
-                a_label: "Distancia orbital (a, UA):", // NUEVO
+                a_label: "Distancia orbital (a, UA):",
                 play: "▶ Reproducir",
                 pause: "⏸ Pausa",
                 reset: "⏮ Reiniciar",
@@ -768,6 +794,7 @@
                 without_ld: "(sin LD)",
                 params_title: "Parámetros de Simulación: Estrella con Radio = {star_radius} R☉ (Tipo {star}) con Planeta de Radio = {planet_radius} R⊕ {ld}",
                 reset_params: "Restablecer Parámetros",
+                tutorial_label: "Tutorial",
             }
         };
         let LANG = 'pt';
@@ -787,6 +814,7 @@
             document.querySelector(".canvas-block .canvas-title").textContent = LANGS[lang].lightcurve;
             document.querySelectorAll(".canvas-block .canvas-title")[1].textContent = LANGS[lang].animation;
             document.getElementById('reset-params-btn').textContent = LANGS[lang].reset_params;
+            document.getElementById('tutorial-link').textContent = LANGS[lang].tutorial_label;
             drawLightCurveProgress(-1);
             updateTimeDisplay();
             updateFrame();

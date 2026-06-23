@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial — Exoplanet Transit Simulator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+        background-color: #f5f5f5;
+        color: #222;
+        line-height: 1.55;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .back-btn {
+        background: #007bff;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .back-btn:hover { background: #0056b3; }
+    h1 {
+        font-size: 28px;
+        margin-top: 0;
+        color: #1a1a1a;
+    }
+    h2 {
+        font-size: 22px;
+        margin-top: 40px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #e9ecef;
+        color: #1a1a1a;
+    }
+    h3 {
+        font-size: 18px;
+        margin-top: 25px;
+        color: #333;
+    }
+    p { margin: 12px 0; }
+    .lead {
+        font-size: 17px;
+        color: #444;
+    }
+    .control-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .control-table th, .control-table td {
+        border: 1px solid #ddd;
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .control-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+        width: 70px;
+        text-align: center;
+    }
+    .control-table .num {
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+    }
+    .formula-box {
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-family: "Cambria Math", Georgia, serif;
+        font-size: 16px;
+        overflow-x: auto;
+    }
+    .note-box {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .limitation-box {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .activity {
+        background: #e7f5ff;
+        border-left: 4px solid #1c7ed6;
+        padding: 14px 16px;
+        margin: 15px 0;
+        border-radius: 4px;
+    }
+    .activity strong { color: #1c7ed6; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 6px 0; }
+    .figure-placeholder {
+        background: #f1f3f5;
+        border: 2px dashed #ced4da;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+        color: #868e96;
+        margin: 20px 0;
+        font-size: 14px;
+    }
+    code {
+        background: #f1f3f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+    footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        font-size: 13px;
+        color: #888;
+        text-align: center;
+    }
+    .lang-switch {
+        display: flex;
+        gap: 6px;
+    }
+    .lang-switch button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 13px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="top-bar">
+        <a href="index.html" class="back-btn">← Back to Simulator</a>
+        <div class="lang-switch">
+            <a href="tutorial.html"><button style="background:#009440;color:#fff;">PT-BR</button></a>
+            <button style="background:#ffcb00;color:#333;">ENG</button>
+            <a href="tutorial-es.html"><button style="background:#302681;color:#fff;">ESP</button></a>
+        </div>
+    </div>
+
+    <h1>Exoplanet Transit Simulator Tutorial</h1>
+    <p class="lead">
+        This guide explains how each control of the simulator works, the physics behind the calculations
+        performed in real time, and suggests activities for classroom use. To access the tool,
+        <a href="index.html">go back to the simulator</a>.
+    </p>
+
+    <h2 id="o-que-e">What is the simulator?</h2>
+    <p>
+        Planetary transit is the most productive method for detecting exoplanets, accounting for
+        approximately 75% of confirmed discoveries. It relies on observing the periodic decrease in a
+        star's brightness caused by a planet passing in front of its disk.
+    </p>
+    <p>
+        Accurately interpreting this light curve requires accounting for <strong>limb darkening</strong>:
+        the edges of the stellar disk emit less light than the center, due to the thermal structure of the
+        photosphere. This effect rounds off the ingress and egress phases of the transit and is essential
+        for correctly determining the planetary radius — far from being mere noise to be discarded.
+    </p>
+    <p>
+        This simulator allows you to manipulate, in real time, the physical and orbital parameters of an
+        exoplanetary system and immediately observe their effects on the light curve, synchronizing the
+        geometric representation of the transit with the resulting flux graph.
+    </p>
+
+    <h2 id="painel-controle">The control panel</h2>
+    <p>The interface is divided into a physical parameters panel and a dual visualization region, with each element numbered in the figure below. The following tables describe each of these numbers in detail.</p>
+
+    <div class="figure-placeholder">
+        <img src="figures/simulador.png" alt="Numbered simulator interface" style="width:100%; border-radius:8px;">
+    </div>
+
+    <h3>Geometric and orbital parameters</h3>
+    <table class="control-table">
+        <tr><th>Control</th><th>Description</th></tr>
+        <tr>
+            <td class="num">Planet Radius (R⊕) <em>(2)</em></td>
+            <td>Sets the planet's radius in units of Earth radii, from 0.2 to 30 R⊕. The larger the planet relative to the star, the deeper the transit.</td>
+        </tr>
+        <tr>
+            <td class="num">Star Radius (R☉) <em>(5)</em></td>
+            <td>Sets the host star's radius in units of solar radii, from 0.2 to 10 R☉. As this value changes, the simulator automatically updates the displayed <strong>Spectral Type (7)</strong>, following the Harvard Spectral Classification (O, B, A, F, G, K, M), along with the estimated mass and limb darkening coefficients.</td>
+        </tr>
+        <tr>
+            <td class="num">Impact Parameter (b) <em>(3)</em></td>
+            <td>Controls the projected distance between the center of the planet and the center of the star during the transit, ranging from −0.99 to 0.99. Values near zero represent central transits; values near ±1 represent grazing transits, close to the edge of the stellar disk.</td>
+        </tr>
+        <tr>
+            <td class="num">Orbital Distance (a, AU) <em>(4)</em></td>
+            <td>Sets the planet's semi-major axis in astronomical units. This value, together with the estimated stellar mass, determines the orbital period via Kepler's Third Law and, consequently, the transit duration.</td>
+        </tr>
+        <tr>
+            <td class="num">Limb Darkening (LD) <em>(6)</em></td>
+            <td>Turns the limb darkening effect on or off in both the light curve calculation and the visual rendering of the star. Compare both conditions to see how the effect rounds off the ingress and egress phases.</td>
+        </tr>
+        <tr>
+            <td class="num">Reset Parameters <em>(8)</em></td>
+            <td>Restores all controls to the reference values of an Earth–Sun system (R⊕ = 1, R☉ = 1, b = 0, a = 1 AU).</td>
+        </tr>
+    </table>
+
+    <h3>Accessibility and language</h3>
+    <p>At the top of the interface, the buttons <strong>(1)</strong> allow you to instantly switch the simulator's language between Portuguese, Spanish, and English.</p>
+
+    <h3>Animation and time controls</h3>
+    <table class="control-table">
+        <tr><th>Control</th><th>Description</th></tr>
+        <tr>
+            <td class="num">Start / Stop <em>(9)</em></td>
+            <td>Starts or pauses the real-time transit animation.</td>
+        </tr>
+        <tr>
+            <td class="num">Restart <em>(10)</em></td>
+            <td>Restarts the animation from the first frame, without changing the physical parameters.</td>
+        </tr>
+        <tr>
+            <td class="num">Transit Time <em>(13)</em></td>
+            <td>Displays the elapsed time from the start of the transit (first contact) to the current instant, calculated from the total duration T₁₄ derived from the system's orbital physics.</td>
+        </tr>
+        <tr>
+            <td class="num">Timeline <em>(11)</em></td>
+            <td>Allows you to manually drag the animation position (<em>scrubbing</em>), stopping at any instant — for example, exactly at the moment of first contact — regardless of the playback state.</td>
+        </tr>
+        <tr>
+            <td class="num">Speed <em>(12)</em></td>
+            <td>Controls the animation playback speed. To the left, faster; to the right, slower.</td>
+        </tr>
+    </table>
+
+    <h3>Visualization panels</h3>
+    <p>
+        The left panel draws the <strong>light curve</strong> in real time, displaying the relative flux (%)
+        as a function of time (hours), the instantaneous current flux <em>(14)</em>, and — at the end of the
+        animation — a summary of the simulation parameters <em>(15)</em>. The right panel shows the
+        <strong>star–planet interaction</strong>, with the planet <em>(16)</em> orbiting the host star
+        <em>(17)</em> along a trajectory represented by a dotted line.
+    </p>
+
+    <p>
+        As soon as the planet touches the edge of the stellar disk, the simulator displays a visual alert
+        reading <strong>"TRANSIT DETECTED" (18)</strong>, signaling the start of the flux drop:
+    </p>
+
+    <div class="figure-placeholder">
+        <img src="figures/b.png" alt="Transit detected alert" style="width:100%; border-radius:8px;">
+    </div>
+
+    <p>
+        At the end of the animation, with the planet in egress, the light curve panel displays a report with
+        the exact percentage of flux blocked by the transit <em>(19)</em>:
+    </p>
+
+    <div class="figure-placeholder">
+        <img src="figures/e.png" alt="Final report of blocked flux" style="width:100%; border-radius:8px;">
+    </div>
+
+   <h2 id="fisica">The physics behind the simulator</h2>
+
+    <h3>Transit geometry</h3>
+    <p>
+        The core of the simulator calculates the fraction of stellar flux blocked by the planet at each
+        instant, based on the projected distance <code>z</code> between the centers of the two disks
+        (normalized by the stellar radius) and the radius ratio <code>p = R<sub>p</sub>/R<sub>★</sub></code>.
+        The algorithm distinguishes three geometric regimes:
+    </p>
+    <ul>
+        <li><strong>Out of transit</strong> (z ≥ 1+p): the disks do not overlap, blocked flux is zero.</li>
+        <li><strong>Full transit</strong> (z ≤ 1−p): the planet is entirely contained within the stellar disk.</li>
+        <li><strong>Ingress/egress</strong> (1−p &lt; z &lt; 1+p): the disks partially overlap, calculated using the analytical solution of Mandel &amp; Agol (2002) for the intersection area of two circles.</li>
+    </ul>
+
+    <h3>Limb darkening</h3>
+    <p>
+        When LD is enabled, the geometric transit depth is weighted by the local intensity of the stellar
+        surface, described by the quadratic law of Claret (2000):
+    </p>
+    <div class="formula-box">
+        I(μ)/I(1) = 1 − u₁(1 − μ) − u₂(1 − μ)²
+    </div>
+    <p>
+        where <code>μ</code> is the normalized radial coordinate on the stellar surface, and <code>u₁</code>,
+        <code>u₂</code> are coefficients that depend on the star's spectral type. Cooler stars (types K and M)
+        have larger coefficients, indicating more pronounced limb darkening, than hotter stars (types O and B).
+    </p>
+    <div class="note-box">
+        <strong>Technical note:</strong> for computational performance reasons, the simulator adopts a
+        simplified single-point approximation, weighting the geometric occultation area by a single
+        multiplicative factor based on the position of the planet's center — rather than the full integration
+        of the Mandel &amp; Agol formalism for obscured sources. This simplification qualitatively reproduces
+        the rounding effect, but does not have the precision of a rigorous quantitative analysis.
+    </div>
+
+    <h3>Real orbital physics (Kepler's Law)</h3>
+    <p>
+        The animation's time scale is not arbitrary: the simulator derives the orbital period <code>P</code>
+        from Kepler's Third Law,
+    </p>
+    <div class="formula-box">
+        P = 2π √(a³ / G·M★)
+    </div>
+    <p>
+        where the stellar mass <code>M★</code> is estimated from the average value of the mass range
+        associated with the spectral class identified from the given radius. From <code>P</code> and the
+        orbital inclination derived from the impact parameter, the total transit duration (T₁₄) is calculated
+        and displayed dynamically during the animation.
+    </p>
+
+    <h2 id="atividades">Suggested classroom activities</h2>
+
+    <div class="activity">
+        <strong>Activity 1 — The effect of limb darkening</strong>
+        <p>Set up a system with R☉ = 1, R⊕ = 5, and b = 0. Run the animation with LD enabled and then
+        disabled. Ask students to describe the difference in the shape of the light curve, especially during
+        the ingress and egress phases.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Activity 2 — Comparing spectral types</strong>
+        <p>Keeping the planet's radius fixed, change the stellar radius to obtain a G-type star (≈1 R☉) and
+        then an M-type star (≈0.3 R☉). Compare the transit depth and the curvature of the light curve's base
+        in both cases.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Activity 3 — Central vs. grazing transits</strong>
+        <p>With the same radius parameters, vary the impact parameter from 0 to near 1. Observe how the shape
+        of the light curve changes from a symmetric, deep profile to an asymmetric, shallow one, until the
+        transit is no longer detected.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Activity 4 — Orbital distance and transit duration</strong>
+        <p>Keeping the other parameters fixed, compare the transit duration (T₁₄) for a = 0.1 AU and
+        a = 1.0 AU. Relate the observed difference to Kepler's Third Law.</p>
+    </div>
+
+    <h2 id="limitacoes">Simulator limitations</h2>
+    <div class="limitation-box">
+        <p>This is an exploratory and conceptual tool, not intended for quantitative observational analysis.
+        The current version does not incorporate:</p>
+        <ul>
+            <li>Instrumental photometric noise</li>
+            <li>Stellar variability (spots, magnetic activity)</li>
+            <li>Planetary atmospheres</li>
+            <li>The full Mandel &amp; Agol formalism for obscured sources</li>
+        </ul>
+    </div>
+
+    <h2 id="saiba-mais">Learn more</h2>
+    <p>
+        The complete physical foundation, the occultation algorithm, and the educational discussion of this
+        simulator are described in the article published in the Revista Brasileira de Ensino de Física. The
+        source code is available in the
+        <a href="https://github.com/icaromeidem/transit-simulator" target="_blank">GitHub repository</a>.
+    </p>
+
+    <footer>
+        Developed by Ícaro Meidem and Marcelo Emílio · Observatório Nacional / Universidade Estadual de Ponta Grossa · 2025 ·
+    </footer>
+
+</div>
+</body>
+</html>
