@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tutorial — Simulador de Trânsitos de Exoplanetas</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+        background-color: #f5f5f5;
+        color: #222;
+        line-height: 1.55;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .back-btn {
+        background: #007bff;
+        color: #fff;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+    }
+    .back-btn:hover { background: #0056b3; }
+    h1 {
+        font-size: 28px;
+        margin-top: 0;
+        color: #1a1a1a;
+    }
+    h2 {
+        font-size: 22px;
+        margin-top: 40px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #e9ecef;
+        color: #1a1a1a;
+    }
+    h3 {
+        font-size: 18px;
+        margin-top: 25px;
+        color: #333;
+    }
+    p { margin: 12px 0; }
+    .lead {
+        font-size: 17px;
+        color: #444;
+    }
+    .control-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .control-table th, .control-table td {
+        border: 1px solid #ddd;
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .control-table th {
+        background: #f8f9fa;
+        font-weight: bold;
+        width: 70px;
+        text-align: center;
+    }
+    .control-table .num {
+        font-weight: bold;
+        color: #007bff;
+        text-align: center;
+    }
+    .formula-box {
+        background: #f8f9fa;
+        border-left: 4px solid #007bff;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-family: "Cambria Math", Georgia, serif;
+        font-size: 16px;
+        overflow-x: auto;
+    }
+    .note-box {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .limitation-box {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+        padding: 12px 16px;
+        margin: 15px 0;
+        font-size: 15px;
+    }
+    .activity {
+        background: #e7f5ff;
+        border-left: 4px solid #1c7ed6;
+        padding: 14px 16px;
+        margin: 15px 0;
+        border-radius: 4px;
+    }
+    .activity strong { color: #1c7ed6; }
+    ul, ol { padding-left: 22px; }
+    li { margin: 6px 0; }
+    .figure-placeholder {
+        background: #f1f3f5;
+        border: 2px dashed #ced4da;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+        color: #868e96;
+        margin: 20px 0;
+        font-size: 14px;
+    }
+    code {
+        background: #f1f3f5;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+    footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        font-size: 13px;
+        color: #888;
+        text-align: center;
+    }
+    .lang-switch {
+        display: flex;
+        gap: 6px;
+    }
+    .lang-switch button {
+        border: none;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 13px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+
+    <div class="top-bar">
+        <a href="index.html" class="back-btn">← Voltar ao Simulador</a>
+        <div class="lang-switch">
+            <button style="background:#009440;color:#fff;">PT-BR</button>
+            <a href="tutorial-en.html"><button style="background:#ffcb00;color:#333;">ENG</button></a>
+            <a href="tutorial-es.html"><button style="background:#302681;color:#fff;">ESP</button></a>
+        </div>
+    </div>
+
+    <h1>Tutorial do Simulador de Trânsitos de Exoplanetas</h1>
+    <p class="lead">
+        Este guia explica o funcionamento de cada controle do simulador, a física por trás dos cálculos
+        realizados em tempo real, e sugere atividades para uso em sala de aula. Para acessar a ferramenta,
+        <a href="index.html">volte ao simulador</a>.
+    </p>
+
+    <h2 id="o-que-e">O que é o simulador?</h2>
+    <p>
+        O trânsito planetário é o método mais produtivo na detecção de exoplanetas, respondendo por
+        aproximadamente 75% das descobertas confirmadas. Ele se baseia na observação da diminuição periódica
+        do brilho de uma estrela causada pela passagem de um planeta em frente ao seu disco.
+    </p>
+    <p>
+        A interpretação precisa dessa curva de luz exige considerar o <strong>escurecimento de limbo</strong>
+        (<em>limb darkening</em>): as bordas do disco estelar emitem menos luz do que o centro, devido à
+        estrutura térmica da fotosfera. Esse efeito arredonda as fases de ingresso e egresso do trânsito e é
+        essencial para a determinação correta do raio planetário — longe de ser um mero ruído a ser descartado.
+    </p>
+    <p>
+        Este simulador permite manipular, em tempo real, os parâmetros físicos e orbitais de um sistema
+        exoplanetário e observar imediatamente seus efeitos sobre a curva de luz, sincronizando a representação
+        geométrica do trânsito com o gráfico de fluxo gerado.
+    </p>
+
+    <h2 id="painel-controle">O painel de controle</h2>
+    <p>A interface é dividida em um painel de parâmetros físicos e uma região dupla de visualização, com cada elemento numerado na figura abaixo. As tabelas seguintes descrevem cada um desses números em detalhe.</p>
+
+    <div class="figure-placeholder">
+        <img src="figures/simulador.png" alt="Interface do simulador numerada" style="width:100%; border-radius:8px;">
+    </div>
+
+    <h3>Parâmetros geométricos e orbitais</h3>
+    <table class="control-table">
+        <tr><th>Controle</th><th>Descrição</th></tr>
+        <tr>
+            <td class="num">Raio do Planeta (R⊕) <em>(2)</em></td>
+            <td>Define o raio do planeta em unidades de raios terrestres, de 0,2 a 30 R⊕. Quanto maior o planeta em relação à estrela, mais profundo é o trânsito.</td>
+        </tr>
+        <tr>
+            <td class="num">Raio da Estrela (R☉) <em>(5)</em></td>
+            <td>Define o raio da estrela hospedeira em unidades de raios solares, de 0,2 a 10 R☉. Ao ser alterado, atualiza automaticamente o <strong>Tipo Estelar (7)</strong> exibido, seguindo a Classificação Espectral de Harvard (O, B, A, F, G, K, M), além da massa estimada e dos coeficientes de escurecimento de limbo.</td>
+        </tr>
+        <tr>
+            <td class="num">Parâmetro de Impacto (b) <em>(3)</em></td>
+            <td>Controla a distância projetada entre o centro do planeta e o centro da estrela durante o trânsito, variando de −0,99 a 0,99. Valores próximos de zero representam trânsitos centrais; valores próximos de ±1 representam trânsitos rasantes, próximos da borda do disco estelar.</td>
+        </tr>
+        <tr>
+            <td class="num">Distância orbital (a, UA) <em>(4)</em></td>
+            <td>Define o semieixo orbital do planeta em unidades astronômicas. Esse valor, junto à massa estelar estimada, determina o período orbital pela Terceira Lei de Kepler e, consequentemente, a duração do trânsito.</td>
+        </tr>
+        <tr>
+            <td class="num">Escurecimento de Limbo (LD) <em>(6)</em></td>
+            <td>Ativa ou desativa o efeito de escurecimento de limbo no cálculo da curva de luz e na renderização visual da estrela. Compare as duas condições para visualizar como o efeito arredonda as fases de ingresso e egresso.</td>
+        </tr>
+        <tr>
+            <td class="num">Reiniciar Parâmetros <em>(8)</em></td>
+            <td>Restaura todos os controles para os valores de referência de um sistema Terra–Sol (R⊕ = 1, R☉ = 1, b = 0, a = 1 UA).</td>
+        </tr>
+    </table>
+
+    <h3>Acessibilidade e idioma</h3>
+    <p>No topo da interface, os botões <strong>(1)</strong> permitem alternar instantaneamente o idioma do simulador entre Português, Espanhol e Inglês.</p>
+
+    <h3>Controles de animação e tempo</h3>
+    <table class="control-table">
+        <tr><th>Controle</th><th>Descrição</th></tr>
+        <tr>
+            <td class="num">Início / Parar <em>(9)</em></td>
+            <td>Inicia ou pausa a animação do trânsito em tempo real.</td>
+        </tr>
+        <tr>
+            <td class="num">Reiniciar <em>(10)</em></td>
+            <td>Reinicia a animação a partir do primeiro quadro, sem alterar os parâmetros físicos.</td>
+        </tr>
+        <tr>
+            <td class="num">Tempo de Trânsito <em>(13)</em></td>
+            <td>Exibe o tempo decorrido do início do trânsito (primeiro contato) até o instante atual, calculado a partir da duração total T₁₄ derivada da física orbital do sistema.</td>
+        </tr>
+        <tr>
+            <td class="num">Linha do tempo <em>(11)</em></td>
+            <td>Permite arrastar manualmente a posição da animação (<em>scrubbing</em>), parando em qualquer instante — por exemplo, exatamente no momento do primeiro contato — independentemente do estado de reprodução.</td>
+        </tr>
+        <tr>
+            <td class="num">Velocidade <em>(12)</em></td>
+            <td>Controla a velocidade de reprodução da animação. Para a esquerda, mais rápida; para a direita, mais lenta.</td>
+        </tr>
+    </table>
+
+    <h3>Painéis de visualização</h3>
+    <p>
+        O painel esquerdo desenha a <strong>curva de luz</strong> em tempo real, exibindo o fluxo relativo (%)
+        em função do tempo (horas), o fluxo atual instantâneo <em>(14)</em>, e — ao final da animação — um resumo
+        dos parâmetros da simulação <em>(15)</em>. O painel direito mostra a <strong>interação entre estrela
+        e planeta</strong>, com o planeta <em>(16)</em> orbitando a estrela hospedeira <em>(17)</em> ao longo de
+        uma trajetória representada por uma linha pontilhada.
+    </p>
+
+    <p>
+        Assim que o planeta toca a borda do disco estelar, o simulador exibe um alerta visual de
+        <strong>"TRÂNSITO DETECTADO" (18)</strong>, sinalizando o início da queda de fluxo:
+    </p>
+
+    <div class="figure-placeholder">
+        <img src="figures/b.png" alt="Alerta de trânsito detectado" style="width:100%; border-radius:8px;">
+    </div>
+
+    <p>
+        Ao final da animação, com o planeta egresso, o painel da curva de luz exibe um relatório com o
+        percentual exato de fluxo bloqueado pelo trânsito <em>(19)</em>:
+    </p>
+
+    <div class="figure-placeholder">
+        <img src="figures/e.png" alt="Relatório final de fluxo bloqueado" style="width:100%; border-radius:8px;">
+    </div>
+
+   <h2 id="fisica">A física por trás do simulador</h2>
+
+    <h3>Geometria do trânsito</h3>
+    <p>
+        O núcleo do simulador calcula a fração de fluxo estelar bloqueado pelo planeta a cada instante,
+        a partir da distância projetada <code>z</code> entre os centros dos dois discos (normalizada pelo raio
+        estelar) e da razão dos raios <code>p = R<sub>p</sub>/R<sub>★</sub></code>. O algoritmo distingue três
+        regimes geométricos:
+    </p>
+    <ul>
+        <li><strong>Fora do trânsito</strong> (z ≥ 1+p): os discos não se sobrepõem, fluxo bloqueado nulo.</li>
+        <li><strong>Trânsito total</strong> (z ≤ 1−p): o planeta está inteiramente contido no disco estelar.</li>
+        <li><strong>Ingresso/egresso</strong> (1−p &lt; z &lt; 1+p): os discos se interceptam parcialmente, calculado pela solução analítica de Mandel &amp; Agol (2002) para a área de interseção de dois círculos.</li>
+    </ul>
+
+    <h3>Escurecimento de limbo</h3>
+    <p>
+        Quando o LD está ativado, a profundidade geométrica do trânsito é ponderada pela intensidade local da
+        superfície estelar, descrita pela lei quadrática de Claret (2000):
+    </p>
+    <div class="formula-box">
+        I(μ)/I(1) = 1 − u₁(1 − μ) − u₂(1 − μ)²
+    </div>
+    <p>
+        em que <code>μ</code> é a coordenada radial normalizada na superfície estelar, e <code>u₁</code>,
+        <code>u₂</code> são coeficientes que dependem do tipo espectral da estrela. Estrelas mais frias (tipos
+        K e M) apresentam coeficientes maiores, indicando escurecimento de limbo mais pronunciado, do que
+        estrelas quentes (tipos O e B).
+    </p>
+    <div class="note-box">
+        <strong>Nota técnica:</strong> por razões de desempenho computacional, o simulador adota uma aproximação
+        simplificada de ponto único, ponderando a área de ocultação geométrica por um único fator multiplicativo
+        baseado na posição do centro do planeta — e não pela integração completa do formalismo de Mandel &amp; Agol
+        para fontes obscurecidas. Essa simplificação reproduz qualitativamente o efeito de arredondamento, mas
+        não tem a precisão de uma análise quantitativa rigorosa.
+    </div>
+
+    <h3>Física orbital real (Lei de Kepler)</h3>
+    <p>
+        A escala temporal da animação não é arbitrária: o simulador deriva o período orbital <code>P</code> a
+        partir da Terceira Lei de Kepler,
+    </p>
+    <div class="formula-box">
+        P = 2π √(a³ / G·M★)
+    </div>
+    <p>
+        em que a massa estelar <code>M★</code> é estimada a partir do valor médio da faixa de massa associada à
+        classe espectral identificada pelo raio informado. A partir de <code>P</code> e da inclinação orbital
+        derivada do parâmetro de impacto, calcula-se a duração total do trânsito (T₁₄), exibida dinamicamente
+        durante a animação.
+    </p>
+
+    <h2 id="atividades">Atividades sugeridas para sala de aula</h2>
+
+    <div class="activity">
+        <strong>Atividade 1 — O efeito do escurecimento de limbo</strong>
+        <p>Configure um sistema com R☉ = 1, R⊕ = 5 e b = 0. Execute a animação com o LD ativado e depois
+        desativado. Peça aos estudantes que descrevam a diferença na forma da curva de luz, especialmente nas
+        fases de ingresso e egresso.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Atividade 2 — Comparando tipos espectrais</strong>
+        <p>Mantendo o raio do planeta fixo, altere o raio estelar para obter uma estrela do tipo G (≈1 R☉) e,
+        depois, uma estrela do tipo M (≈0,3 R☉). Compare a profundidade do trânsito e a curvatura da base da
+        curva de luz nos dois casos.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Atividade 3 — Trânsitos centrais vs. rasantes</strong>
+        <p>Com os mesmos parâmetros de raio, varie o parâmetro de impacto de 0 a próximo de 1. Observe como a
+        forma da curva de luz muda de um perfil simétrico e profundo para um perfil assimétrico e raso, até
+        deixar de detectar o trânsito.</p>
+    </div>
+
+    <div class="activity">
+        <strong>Atividade 4 — Distância orbital e duração do trânsito</strong>
+        <p>Mantendo os demais parâmetros fixos, compare a duração do trânsito (T₁₄) para a = 0,1 UA e
+        a = 1,0 UA. Relacione a diferença observada à Terceira Lei de Kepler.</p>
+    </div>
+
+    <h2 id="limitacoes">Limitações do simulador</h2>
+    <div class="limitation-box">
+        <p>Esta é uma ferramenta de caráter exploratório e conceitual, não voltada à análise observacional
+        quantitativa. A versão atual não incorpora:</p>
+        <ul>
+            <li>Ruído fotométrico instrumental</li>
+            <li>Variabilidade estelar (manchas, atividade magnética)</li>
+            <li>Atmosferas planetárias</li>
+            <li>O formalismo completo de Mandel &amp; Agol para fontes obscurecidas</li>
+        </ul>
+    </div>
+
+    <h2 id="saiba-mais">Saiba mais</h2>
+    <p>
+        A fundamentação física completa, o algoritmo de ocultação e a discussão didática deste simulador estão
+        descritos no artigo publicado na Revista Brasileira de Ensino de Física. O código-fonte está disponível
+        no <a href="https://github.com/icaromeidem/transit-simulator" target="_blank">repositório do GitHub</a>.
+    </p>
+
+    <footer>
+        Desenvolvido por Ícaro Meidem e Marcelo Emílio · Observatório Nacional / Universidade Estadual de Ponta Grossa · 2025 ·
+    </footer>
+
+</div>
+</body>
+</html>
