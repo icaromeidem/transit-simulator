@@ -30,6 +30,10 @@
             gap: 8px;
             flex-wrap: wrap;
         }
+        .lang-bar-left button {
+            padding: 6px 14px;
+            font-size: 14px;
+        }
         .tutorial-btn {
             background: #495057;
             color: #fff;
@@ -38,9 +42,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 10px 20px;
+            padding: 6px 14px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 14px;
         }
         .tutorial-btn:hover {
             background: #343a40;
@@ -223,7 +227,10 @@
                 <button id="btn-esp" style="background:#ffcb00;color:#333;font-weight:bold;">Versión ESP</button>
                 <button id="btn-eng" style="background:#302681;color:#fff;font-weight:bold;">Version ENG</button>
             </div>
-            <a href="tutorial.html" class="tutorial-btn" id="tutorial-link">Tutorial</a>
+            <div class="lang-bar-right">
+                <a href="https://forms.gle/SEU_LINK_AQUI" target="_blank" class="tutorial-btn" id="feedback-link" style="background:#046ac4;">Feedback</a>
+                <a href="tutorial.html" class="tutorial-btn" id="tutorial-link" style="background:#12b181;">Tutorial</a>
+            </div>
         </div>
         <div class="controls">
             <div class="control-row">
@@ -372,6 +379,9 @@
                 const v = Math.max(min, Math.min(max, val));
                 this.value = v.toFixed(toFixed).replace('.', ',');
                 slider.value = v;
+                if (inputId === 'star-radius-input') {
+                    document.getElementById('star-type-value').textContent = getStarType(v).type;
+                }
                 if (animationData) {
                     if (inputId === 'speed-input') {
                         animationSpeed = 50 / v;
