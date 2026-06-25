@@ -57,19 +57,19 @@
         }
         .control-row {
             display: flex;
-            align-items: flex-end; /* Alinha todos os controles pela base */
+            align-items: flex-end;
             margin: 10px 0;
             gap: 20px;
         }
         .control-group {
             display: flex;
-            align-items: flex-end; /* Alinha cada grupo pela base */
-            gap: 8px; /* Aumenta o espaçamento entre elementos do grupo */
-            min-width: 320px; /* Garante largura mínima para alinhamento */
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 320px;
         }
         label {
             font-weight: bold;
-            min-width: 200px; /* Aumenta largura mínima para alinhamento */
+            min-width: 200px;
         }
         input[type="range"] {
             width: 200px;
@@ -78,16 +78,11 @@
             width: 80px;
             margin-left: 10px;
         }
-        select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
         button {
             background: #007bff;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 10px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
@@ -158,12 +153,6 @@
             background: #c0c0c0;
             margin-bottom: 0;
         }
-        .value-display {
-            background: #e9ecef;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
         .time-display {
             background: #d4edda;
             padding: 5px 10px;
@@ -171,13 +160,6 @@
             font-family: monospace;
             min-width: 100px;
             text-align: center;
-        }
-        .impact-value-display {
-            background: #e9ecef;
-            padding: 2px 8px;
-            border-radius: 3px;
-            font-family: monospace;
-            margin-left: 5px;
         }
         .star-value-display {
             background: #e9ecef;
@@ -209,13 +191,13 @@
             width: 300px;
         }
         .reset-btn {
-            width: 200px;
+            width: 170px;
             height: 30px;
             background: #dc3545;
             color: white;
             border: none;
             padding: 5px 10px;
-            font-size: 15px;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -235,40 +217,37 @@
         <div class="controls">
             <div class="control-row">
                 <div class="control-group">
-                    <label for="radius-slider">Raio do Planeta (R⊕):</label>
+                    <label for="radius-slider" id="label-radius">Raio do Planeta (R⊕):</label>
                     <input type="range" id="radius-slider" min="0.2" max="30" step="0.1" value="1.0">
-                    <input type="text" id="radius-input" style="width: 80px; margin-left: 10px;" value="1,0">
+                    <input type="text" id="radius-input" value="1,0">
                 </div>
                 <div class="control-group">
-                    <label for="star-radius-slider">Raio da Estrela (R☉):</label> 
+                    <label for="star-radius-slider" id="label-star-radius">Raio da Estrela (R☉):</label> 
                     <input type="range" id="star-radius-slider" min="0.2" max="10" step="0.01" value="1.0">
-                    <input type="text" id="star-radius-input" style="width: 80px; margin-left: 10px;" value="1,00">
-                    <label for="star-radius-slider">Tipo Estelar: <span class="star-value-display" id="star-type-value">G</span></label> 
+                    <input type="text" id="star-radius-input" value="1,00">
+                    <label>Tipo Estelar: <span class="star-value-display" id="star-type-value">G</span></label> 
                 </div>
             </div>
             <div class="control-row">
                 <div class="control-group">
-                    <label for="impact-slider">Parâmetro de Impacto (b):</label>
+                    <label for="impact-slider" id="label-impact">Parâmetro de Impacto (b):</label>
                     <input type="range" id="impact-slider" min="-0.99" max="0.99" step="0.01" value="0">
-                    <input type="text" id="impact-input" style="width: 80px; margin-left: 10px;" value="0,00">
+                    <input type="text" id="impact-input" value="0,00">
                 </div>
                 <div class="control-group">
-                    <label>
-                        <input type="checkbox" id="limb-darkening" checked>
-                        Escurecimento de Limbo (LD)
-                    </label>
+                    <label for="ld-slider" id="label-ld">Intensidade do LD:</label>
+                    <input type="range" id="ld-slider" min="0" max="1" step="0.01" value="1.0">
+                    <input type="text" id="ld-input" value="1,00">
                 </div>
             </div>
             <div class="control-row">
                 <div class="control-group">
-                    <label for="a-slider">Distância orbital (a, UA):</label>
+                    <label for="a-slider" id="label-a">Distância orbital (a, UA):</label>
                     <input type="range" id="a-slider" min="0.01" max="5" step="0.01" value="1.0">
-                    <input type="text" id="a-input" style="width: 80px; margin-left: 10px;" value="1,00">
+                    <input type="text" id="a-input" value="1,00">
                 </div>
-            </div>
-            <div class="control-row">
-                <div class="control-group" style="flex-direction:column;align-items:flex-start;min-width:unset;">
-                    <button id="reset-params-btn" class="reset-btn" style="margin-top:4px;">Reiniciar Parâmetros</button>
+                <div class="control-group" style="margin-left: 0px;">
+                    <button id="reset-params-btn" class="reset-btn">Reiniciar Parâmetros</button>
                 </div>
             </div>
         </div>
@@ -276,27 +255,27 @@
         <div class="animation-controls">
             <div class="control-row">
                 <button class="play-pause-btn" id="play-pause-btn" onclick="togglePlayPause()">Início</button>
-                <button onclick="resetAnimation()">Reiniciar</button>
+                <button onclick="resetAnimation()" id="btn-reset-anim">Reiniciar</button>
                 <span class="time-display" id="time-display">Tempo: 0.00 horas</span>
             </div>
             <div class="time-controls">
-                <label for="time-slider">Linha do tempo:</label>
+                <label for="time-slider" id="label-timeline">Linha do tempo:</label>
                 <input type="range" id="time-slider" min="0" max="299" step="1" value="0">
                 <div class="control-group">
-                    <label for="speed-slider">Velocidade:</label>
+                    <label for="speed-slider" id="label-speed">Velocidade:</label>
                     <input type="range" id="speed-slider" min="0.25" max="10" step="0.25" value="1">
-                    <input type="text" id="speed-input" style="width: 80px; margin-left: 10px;" value="1,0">
+                    <input type="text" id="speed-input" value="1,0">
                 </div>
             </div>
         </div>
 
         <div class="output-area">
             <div class="canvas-block">
-                <div class="canvas-title">Curva de Luz</div>
+                <div class="canvas-title" id="title-lightcurve">Curva de Luz</div>
                 <canvas id="lightcurve"></canvas>
             </div>
             <div class="canvas-block">
-                <div class="canvas-title">Interação entre Estrela e Planeta</div>
+                <div class="canvas-title" id="title-animation">Interação entre Estrela e Planeta</div>
                 <canvas id="animation"></canvas>
             </div>
         </div>
@@ -316,8 +295,10 @@
         let animationData = null, isPlaying = false, currentFrame = 0, animationInterval = null, animationSpeed = 50;
 
         // --- FUNÇÕES MATEMATICAS E DE SIMULACAO ---
-        function limb_darkening(mu, u1, u2) {
-            return 1 - u1 * (1 - mu) - u2 * Math.pow(1 - mu, 2);
+        function limb_darkening(mu, u1, u2, weight) {
+            // Modula a intensidade do LD com o peso do slider
+            const drop = (u1 * (1 - mu) + u2 * Math.pow(1 - mu, 2)) * weight;
+            return 1 - drop;
         }
         function linspace(start, stop, num) {
             const arr = [], step = (stop - start) / (num - 1);
@@ -333,7 +314,7 @@
             }
             return starTypes[starTypes.length - 1];
         }
-        function generate_transit_curve(z_array, rp_rs, u1, u2, use_ld) {
+        function generate_transit_curve(z_array, rp_rs, u1, u2, ld_weight) {
             const flux = [];
             for (let i = 0; i < z_array.length; i++) {
                 const z = z_array[i];
@@ -348,10 +329,8 @@
                         delta = area / Math.PI;
                     } catch (e) { delta = 0; }
                 }
-                if (use_ld) {
-                    const mu = Math.sqrt(1 - Math.pow(Math.min(z, 1), 2));
-                    delta *= limb_darkening(mu, u1, u2);
-                }
+                const mu = Math.sqrt(1 - Math.pow(Math.min(z, 1), 2));
+                delta *= limb_darkening(mu, u1, u2, ld_weight);
                 flux.push((1 - delta) * 100);
             }
             return flux;
@@ -361,6 +340,8 @@
         function syncInputSlider(inputId, sliderId, min, max, step, toFixed) {
             const input = document.getElementById(inputId);
             const slider = document.getElementById(sliderId);
+            
+            // Slider alterando em tempo real
             slider.addEventListener('input', function() {
                 input.value = parseFloat(this.value).toFixed(toFixed).replace('.', ',');
                 if (animationData) {
@@ -369,10 +350,15 @@
                         animationSpeed = 50 / speedValue;
                         if (isPlaying) { stopAnimation(); startAnimation(); }
                     } else {
+                        if (inputId === 'star-radius-input') {
+                            document.getElementById('star-type-value').textContent = getStarType(parseFloat(this.value)).type;
+                        }
                         runSimulation();
                     }
                 }
             });
+            
+            // Input manual
             input.addEventListener('blur', function() {
                 let val = parseFloat(convertCommaToPoint(this.value));
                 if (isNaN(val)) val = min;
@@ -401,8 +387,6 @@
             isPlaying = true;
             updatePlayPauseButton();
             startAnimation();
-            document.getElementById('play-pause-btn').style.display = '';
-            document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
         }
         function pauseAnimation() {
             isPlaying = false;
@@ -414,8 +398,6 @@
             currentFrame = 0;
             document.getElementById('time-slider').value = 0;
             updateFrame();
-            document.getElementById('play-pause-btn').style.display = '';
-            document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
         }
         function startAnimation() {
             if (animationInterval) clearInterval(animationInterval);
@@ -424,8 +406,6 @@
                 if (currentFrame >= animationData.x.length) {
                     currentFrame = animationData.x.length - 1;
                     pauseAnimation();
-                    document.getElementById('play-pause-btn').style.display = 'none';
-                    document.querySelector('.animation-controls button:not(.play-pause-btn)').style.display = '';
                     return;
                 }
                 document.getElementById('time-slider').value = currentFrame;
@@ -436,19 +416,7 @@
             if (animationInterval) { clearInterval(animationInterval); animationInterval = null; }
         }
         function updatePlayPauseButton() {
-            document.getElementById('play-pause-btn').textContent = LANGS[LANG].pause;
-            if (!isPlaying) document.getElementById('play-pause-btn').textContent = LANGS[LANG].play;
-        }
-        function updateLimbDarkeningLabel() {
-            const checkbox = document.getElementById('limb-darkening');
-            const label = checkbox.parentNode;
-            for (let i = 0; i < label.childNodes.length; i++) {
-                const node = label.childNodes[i];
-                if (node.nodeType === 3 && node.textContent.trim().length > 0) {
-                    node.textContent = ' ' + LANGS[LANG].limb_darkening;
-                    break;
-                }
-            }
+            document.getElementById('play-pause-btn').textContent = isPlaying ? LANGS[LANG].pause : LANGS[LANG].play;
         }
         function updateTimeDisplay() {
             if (!animationData) return;
@@ -465,18 +433,13 @@
                 if (animationData.x[i] <= x2) { idx2 = i; break; }
             }
             let t_display = 0;
-            if (currentFrame < idx1) {
-                t_display = 0;
-            } else if (currentFrame > idx2) {
-                t_display = T14;
-            } else {
+            if (currentFrame < idx1) t_display = 0;
+            else if (currentFrame > idx2) t_display = T14;
+            else {
                 const frac = (currentFrame - idx1) / (idx2 - idx1);
                 t_display = frac * T14;
             }
             document.getElementById('time-display').textContent = LANGS[LANG].time.replace('{t}', t_display.toFixed(2));
-            if (document.getElementById('t14-display')) {
-                document.getElementById('t14-display').textContent = `T₁₄: ${T14.toFixed(3)} h`;
-            }
         }
         function updateFrame() {
             if (!animationData) return;
@@ -490,19 +453,21 @@
             const rp_re = parseFloat(convertCommaToPoint(document.getElementById('radius-input').value));
             const rstar = parseFloat(convertCommaToPoint(document.getElementById('star-radius-input').value));
             const a_ua = parseFloat(convertCommaToPoint(document.getElementById('a-input').value));
+            const ld_weight = parseFloat(convertCommaToPoint(document.getElementById('ld-input').value));
+            const impact = parseFloat(convertCommaToPoint(document.getElementById('impact-input').value));
+            
             const starType = getStarType(rstar);
             const ms = (starType.mass_min + starType.mass_max) / 2;
-            const use_ld = document.getElementById('limb-darkening').checked;
-            const impact = parseFloat(convertCommaToPoint(document.getElementById('impact-input').value));
             const rp_rsun = rp_re * 0.0091577;
             const rp_rs = rp_rsun / rstar;
+            
             const AU_in_Rsun = 215.032;
             const G = 6.67430e-11;
             const Msun = 1.98847e30;
-            const Rsun = 6.957e8;
             const a_rsun = a_ua * AU_in_Rsun;
             const a_m = a_ua * 1.495978707e11;
             const mstar_kg = ms * Msun;
+            
             const P_s = 2 * Math.PI * Math.sqrt(Math.pow(a_m, 3) / (G * mstar_kg));
             const P_dias = P_s / 86400;
             const P_horas = P_s / 3600;
@@ -510,32 +475,40 @@
             const k = rp_rs;
             const numerador = rstar / a_rsun * Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
             const denominador = Math.sin(incl);
+            
             let T14_horas = 0;
             if (denominador > 0 && numerador > 0 && numerador / denominador <= 1) {
                 T14_horas = (P_horas / Math.PI) * Math.asin(numerador / denominador);
-            } else {
-                T14_horas = 0;
             }
+            
             const x = linspace(-2, 2, 300);
             const z = x.map(val => Math.sqrt(val*val + impact*impact));
-            const flux = generate_transit_curve(z, rp_rs, starType.u1, starType.u2, use_ld);
-            const x1 = -Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
-            const x2 =  Math.sqrt(Math.pow(1 + k, 2) - Math.pow(impact, 2));
-            const idx1 = x.findIndex(val => val >= x1);
-            const idx2 = x.findIndex(val => val >= x2);
+            const flux = generate_transit_curve(z, rp_rs, starType.u1, starType.u2, ld_weight);
+            
             const v_rstar_dia = 2 * Math.PI * a_rsun / P_dias;
             const v_rstar_hora = v_rstar_dia / 24;
-            const T14_horas_geom = (x2 - x1) / v_rstar_hora;
-            const escala_tempo = T14_horas / T14_horas_geom;
             const time_horas = x.map(val => val / v_rstar_hora);
             const time_days = time_horas.map(h => h / 24);
+            
+            const wasPlaying = isPlaying;
+            const savedFrame = currentFrame;
+            
             animationData = {
-                x, flux, time_days, time_horas, rp_rs, star_type: starType.type, rp_re, use_ld, impact, rstar,
+                x, flux, time_days, time_horas, rp_rs, star_type: starType.type, rp_re, ld_weight, impact, rstar,
                 star_color: starType.color, star_data: starType, a_ua, a_rsun, P_dias, T14_horas
             };
+            
             document.getElementById('time-slider').max = x.length - 1;
-            plotLightCurve(time_days, flux, starType.type, rp_re, use_ld);
-            resetAnimation();
+            
+            // Mantem a animação fluida sem reiniciar
+            if (savedFrame > 0 && savedFrame < x.length) {
+                currentFrame = savedFrame;
+                document.getElementById('time-slider').value = currentFrame;
+                updateFrame();
+                if (wasPlaying) playAnimation();
+            } else {
+                resetAnimation();
+            }
         }
 
         // --- DESENHO DA ANIMAÇÃO E CURVA DE LUZ ---
@@ -548,47 +521,48 @@
             const centerX = canvas.width / 2, centerY = canvas.height / 2;
             const starRadius = Math.min(canvas.height / 3, canvas.width / 5);
             const planetRadius = Math.max(starRadius * animationData.rp_rs, 3);
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Desenha a estrela (com ou sem LD)
-            if (animationData.use_ld) {
-                const steps = 50;
-                for (let r = steps; r > 0; r--) {
-                    const frac = r / steps;
-                    const mu = Math.sqrt(1 - frac * frac);
-                    let intensity = 1 - animationData.star_data.u1 * (1 - mu) - animationData.star_data.u2 * Math.pow(1 - mu, 2);
-                    intensity = Math.max(0.4, Math.min(1, intensity));
-                    intensity = Math.pow(intensity, 0.9);
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY, starRadius * frac, 0, 2 * Math.PI);
-                    const baseColor = animationData.star_color;
-                    let r_val, g_val, b_val;
-                    if (baseColor.startsWith('#')) {
-                        r_val = parseInt(baseColor.slice(1, 3), 16);
-                        g_val = parseInt(baseColor.slice(3, 5), 16);
-                        b_val = parseInt(baseColor.slice(5, 7), 16);
-                    } else { r_val = 255; g_val = 220; b_val = 100; }
-                    const final_r = Math.round(r_val * intensity);
-                    const final_g = Math.round(g_val * intensity);
-                    const final_b = Math.round(b_val * intensity);
-                    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, starRadius * frac);
-                    gradient.addColorStop(0, `rgb(${final_r}, ${final_g}, ${final_b})`);
-                    gradient.addColorStop(1, `rgb(${Math.round(final_r * 0.8)}, ${Math.round(final_g * 0.8)}, ${Math.round(final_b * 0.8)})`);
-                    ctx.fillStyle = gradient;
-                    ctx.globalAlpha = 1.0;
-                    ctx.fill();
-                }
+            
+            // Desenha a estrela com intensidade de LD ponderada
+            const steps = 50;
+            for (let r = steps; r > 0; r--) {
+                const frac = r / steps;
+                const mu = Math.sqrt(1 - frac * frac);
+                
+                // Aplica o peso do LD na renderização visual
+                const drop = (animationData.star_data.u1 * (1 - mu) + animationData.star_data.u2 * Math.pow(1 - mu, 2)) * animationData.ld_weight;
+                let intensity = 1 - drop;
+                
+                intensity = Math.max(0.4, Math.min(1, intensity));
+                intensity = Math.pow(intensity, 0.9); // Correção gamma visual
+                
                 ctx.beginPath();
-                ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
-                ctx.strokeStyle = `rgba(0.1, 0.2, 0.5, 0.15)`;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            } else {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
-                ctx.fillStyle = animationData.star_color;
-                ctx.globalAlpha = 2.0;
+                ctx.arc(centerX, centerY, starRadius * frac, 0, 2 * Math.PI);
+                const baseColor = animationData.star_color;
+                let r_val = parseInt(baseColor.slice(1, 3), 16);
+                let g_val = parseInt(baseColor.slice(3, 5), 16);
+                let b_val = parseInt(baseColor.slice(5, 7), 16);
+                
+                const final_r = Math.round(r_val * intensity);
+                const final_g = Math.round(g_val * intensity);
+                const final_b = Math.round(b_val * intensity);
+                
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, starRadius * frac);
+                gradient.addColorStop(0, `rgb(${final_r}, ${final_g}, ${final_b})`);
+                gradient.addColorStop(1, `rgb(${Math.round(final_r * 0.8)}, ${Math.round(final_g * 0.8)}, ${Math.round(final_b * 0.8)})`);
+                ctx.fillStyle = gradient;
+                ctx.globalAlpha = 1.0;
                 ctx.fill();
             }
+            
+            // Borda da estrela
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, starRadius, 0, 2 * Math.PI);
+            ctx.strokeStyle = `rgba(0.1, 0.2, 0.5, 0.15)`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
             // Linha da trajetória
             ctx.setLineDash([5, 5]);
             ctx.strokeStyle = '#666666';
@@ -598,7 +572,8 @@
             ctx.lineTo(centerX + starRadius * 2, centerY + animationData.impact * starRadius);
             ctx.stroke();
             ctx.setLineDash([]);
-            // Desenha o planeta na posição atual (toda a trajetória, antes, durante e depois do trânsito)
+            
+            // Desenha o planeta
             const x_position = animationData.x[frameIndex];
             const planetX = centerX + x_position * starRadius;
             const planetY = centerY + animationData.impact * starRadius;
@@ -609,7 +584,8 @@
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.stroke();
-            // Indicador de trânsito baseado no fluxo atual
+            
+            // Indicador de trânsito
             const currentFlux = animationData.flux[frameIndex];
             if (currentFlux < 99.999) {
                 ctx.strokeStyle = '#ff6b6b';
@@ -625,6 +601,7 @@
                 ctx.fillText(LANGS[LANG].transit_detected, canvas.width / 2, canvas.height - 5);
             }
         }
+
         function drawLightCurveProgress(currentFrameIndex) {
             if (!animationData) return;
             const canvas = document.getElementById('lightcurve');
@@ -634,18 +611,21 @@
             const margin = {left: 60, right: 20, top: 30, bottom: 70}; 
             const width = canvas.width - margin.left - margin.right;
             const height = canvas.height - margin.top - margin.bottom;
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const minFlux = Math.min(...animationData.flux) - 0.05;
             const maxFlux = 100.05;
+            
             function scaleX(val) {
                 const t0 = animationData.time_days[0];
-                const minTime = 0;
                 const maxTime = animationData.time_days[animationData.time_days.length - 1] - t0;
-                return margin.left + (val - t0) / (maxTime - minTime) * width;
+                return margin.left + (val - t0) / maxTime * width;
             }
             function scaleY(val) {
                 return margin.top + (maxFlux - val) / (maxFlux - minFlux) * height;
             }
+            
+            // Grid
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -662,6 +642,8 @@
                 ctx.lineTo(margin.left + width, y);
                 ctx.stroke();
             }
+            
+            // Linha da curva desenhada até o frame atual
             if (currentFrameIndex >= 0) {
                 ctx.strokeStyle = '#000';
                 ctx.lineWidth = 2;
@@ -675,15 +657,16 @@
                 }
                 ctx.stroke();
             }
+            
+            // Textos
             ctx.fillStyle = '#000';
             ctx.font = '13px Arial';
             ctx.textAlign = 'center';
-            // Unifica o uso dos placeholders para todos os idiomas
             let title = LANGS[LANG].params_title
                 .replace('{star_radius}', animationData.rstar)
                 .replace('{star}', animationData.star_type)
                 .replace('{planet_radius}', animationData.rp_re)
-                .replace('{ld}', animationData.use_ld ? LANGS[LANG].with_ld : LANGS[LANG].without_ld);
+                .replace('{ld}', animationData.ld_weight.toFixed(2));
             ctx.fillText(title, canvas.width / 2, canvas.height - 8); 
             ctx.font = '13px Arial';
             ctx.fillText(LANGS[LANG].time_label, canvas.width / 1.1, canvas.height - 55); 
@@ -692,6 +675,7 @@
             ctx.rotate(-Math.PI / 2);
             ctx.fillText(LANGS[LANG].flux_label, 0, 38);
             ctx.restore();
+            
             if (currentFrameIndex >= 0) {
                 let currentFlux = animationData.flux[currentFrameIndex];
                 ctx.fillStyle = '#000';
@@ -700,16 +684,12 @@
                 let currentFluxDisplay = (isFinite(currentFlux) && !isNaN(currentFlux)) ? currentFlux.toFixed(3) : '0.000';
                 ctx.fillText(`${LANGS[LANG].min_flux.replace('{val}', currentFluxDisplay)}`, margin.left + 10, margin.top + 298);
                 if (currentFrameIndex === animationData.flux.length - 1) {
-                    let minFlux = Math.min(...animationData.flux);
-                    let profundidadeMaxima = 100 - minFlux;
-                    if (!isFinite(profundidadeMaxima) || profundidadeMaxima < 0 || profundidadeMaxima > 100) {
-                        profundidadeMaxima = 100;
-                    }
+                    let profundidadeMaxima = 100 - Math.min(...animationData.flux);
+                    if (!isFinite(profundidadeMaxima) || profundidadeMaxima < 0 || profundidadeMaxima > 100) profundidadeMaxima = 100;
                     ctx.fillText(LANGS[LANG].planet_blocked.replace('{val}', profundidadeMaxima.toFixed(3)), margin.left + 8, margin.top + 330);
                 }
             }
         }
-        function plotLightCurve() { drawLightCurveProgress(-1); }
 
         // --- TEXTOS MULTI-IDIOMA ---
         const LANGS = {
@@ -717,8 +697,8 @@
                 planet_radius: "Raio do Planeta (R⊕):",
                 star_radius: "Raio da Estrela (R☉):",
                 star_type: "Tipo Estelar:",
-                impact: "Parâmetro de impacto (b):",
-                limb_darkening: "Escurecimento de Limbo (LD)",
+                impact: "Parâmetro de Impacto (b):",
+                limb_darkening: "Intensidade do LD:",
                 a_label: "Distância orbital (a, UA):",
                 play: "Início",
                 pause: "Parar",
@@ -731,16 +711,9 @@
                 time: "Tempo de Trânsito: {t} horas",
                 time_label: "Tempo (horas)",
                 flux_label: "Fluxo Relativo (%)",
-                sim_params: "Parâmetros da Simulação:",
-                star_radius_val: "Raio da Estrela: {val} R☉ (Tipo {type})",
-                planet_radius_val: "Raio do Planeta: {val} R⊕",
-                impact_val: "Parâmetro de Impacto: {val}",
-                transit_depth: "Profundidade do Trânsito: {val}%",
                 min_flux: "Fluxo Atual: {val}%",
                 planet_blocked: "O planeta bloqueou {val}% do fluxo total da estrela",
-                with_ld: "(com LD)",
-                without_ld: "(sem LD)",
-                params_title: "Parâmetros da Simulação: Estrela com Raio = {star_radius} R☉ (Tipo {star}) com Planeta de Raio = {planet_radius} R⊕ {ld}",
+                params_title: "Estrela: {star_radius} R☉ (Tipo {star}) | Planeta: {planet_radius} R⊕ | Intensidade do LD: {ld}",
                 reset_params: "Reiniciar Parâmetros",
                 tutorial_label: "Tutorial",
             },
@@ -749,7 +722,7 @@
                 star_radius: "Star Radius (R☉):",
                 star_type: "Spectral Type:",
                 impact: "Impact Parameter (b):",
-                limb_darkening: "Limb Darkening (LD)",
+                limb_darkening: "LD Intensity:",
                 a_label: "Orbital Distance (a, AU):",
                 play: "Play",
                 pause: "Pause",
@@ -762,16 +735,9 @@
                 time: "Transit Time: {t} hours",
                 time_label: "Time (hours)",
                 flux_label: "Relative Flux (%)",
-                sim_params: "Simulation Parameters:",
-                star_radius_val: "Star Radius: {val} R☉ (Type {type})",
-                planet_radius_val: "Planet Radius: {val} R⊕",
-                impact_val: "Impact Parameter: {val}",
-                transit_depth: "Transit Depth: {val}%",
                 min_flux: "Current Flux: {val}%",
                 planet_blocked: "The planet blocked {val}% of the star's total flux",
-                with_ld: "(with LD)",
-                without_ld: "(without LD)",
-                params_title: "Simulation Parameters: Star with Radius = {star_radius} R☉ (Star Type {star}) with Planet Radius = {planet_radius} R⊕ {ld}",
+                params_title: "Star: {star_radius} R☉ (Type {star}) | Planet: {planet_radius} R⊕ | LD Intensity: {ld}",
                 reset_params: "Reset Parameters",
                 tutorial_label: "Tutorial",
             },
@@ -780,7 +746,7 @@
                 star_radius: "Radio de la Estrella (R☉):",
                 star_type: "Tipo Espectral:",
                 impact: "Parámetro de impacto (b):",
-                limb_darkening: "Oscurecimiento de Borde (LD)",
+                limb_darkening: "Intensidad del LD:",
                 a_label: "Distancia orbital (a, UA):",
                 play: "Reproducir",
                 pause: "Pausa",
@@ -793,41 +759,36 @@
                 time: "Tiempo de Tránsito: {t} horas",
                 time_label: "Tiempo (horas)",
                 flux_label: "Flujo Relativo (%)",
-                sim_params: "Parámetros de la Simulación:",
-                star_radius_val: "Radio de la Estrella: {val} R☉ (Tipo {type})",
-                planet_radius_val: "Radio del Planeta = {val} R⊕",
-                impact_val: "Parámetro de Impacto: {val}",
-                transit_depth: "Profundidade del Tránsito: {val}%",
                 min_flux: "Flujo Actual: {val}%",
                 planet_blocked: "El planeta bloqueó el {val}% del flujo total de la estrella",
-                with_ld: "(con LD)",
-                without_ld: "(sin LD)",
-                params_title: "Parámetros de Simulación: Estrella con Radio = {star_radius} R☉ (Tipo {star}) con Planeta de Radio = {planet_radius} R⊕ {ld}",
+                params_title: "Estrella: {star_radius} R☉ (Tipo {star}) | Planeta: {planet_radius} R⊕ | Intensidad del LD: {ld}",
                 reset_params: "Restablecer Parámetros",
                 tutorial_label: "Tutorial",
             }
         };
+        
         let LANG = 'pt';
         function setLang(lang) {
             LANG = lang;
-            pauseAnimation();
-            document.querySelector("label[for='radius-slider']").textContent = LANGS[lang].planet_radius;
-            document.querySelector("label[for='star-radius-slider']").textContent = LANGS[lang].star_radius;
+            document.getElementById('label-radius').textContent = LANGS[lang].planet_radius;
+            document.getElementById('label-star-radius').textContent = LANGS[lang].star_radius;
             document.getElementById('star-type-value').parentNode.childNodes[0].textContent = LANGS[lang].star_type + ' ';
-            document.querySelector("label[for='impact-slider']").textContent = LANGS[lang].impact;
-            document.querySelector("label[for='a-slider']").textContent = LANGS[lang].a_label;
-            updateLimbDarkeningLabel();
+            document.getElementById('label-impact').textContent = LANGS[lang].impact;
+            document.getElementById('label-ld').textContent = LANGS[lang].limb_darkening;
+            document.getElementById('label-a').textContent = LANGS[lang].a_label;
+            
             updatePlayPauseButton();
-            document.querySelector(".animation-controls button:not(.play-pause-btn)").textContent = LANGS[lang].reset;
-            document.querySelector(".time-controls label[for='time-slider']").textContent = LANGS[lang].timeline;
-            document.querySelector(".time-controls label[for='speed-slider']").textContent = LANGS[lang].speed;
-            document.querySelector(".canvas-block .canvas-title").textContent = LANGS[lang].lightcurve;
-            document.querySelectorAll(".canvas-block .canvas-title")[1].textContent = LANGS[lang].animation;
+            document.getElementById('btn-reset-anim').textContent = LANGS[lang].reset;
+            document.getElementById('label-timeline').textContent = LANGS[lang].timeline;
+            document.getElementById('label-speed').textContent = LANGS[lang].speed;
+            
+            document.getElementById('title-lightcurve').textContent = LANGS[lang].lightcurve;
+            document.getElementById('title-animation').textContent = LANGS[lang].animation;
             document.getElementById('reset-params-btn').textContent = LANGS[lang].reset_params;
             document.getElementById('tutorial-link').textContent = LANGS[lang].tutorial_label;
-            drawLightCurveProgress(-1);
+            
             updateTimeDisplay();
-            updateFrame();
+            if (currentFrame >= 0) drawLightCurveProgress(currentFrame);
         }
 
         // --- INICIALIZAÇÃO E EVENTOS ---
@@ -835,35 +796,22 @@
             document.getElementById('btn-eng').onclick = function() { setLang('en'); };
             document.getElementById('btn-esp').onclick = function() { setLang('es'); };
             document.getElementById('btn-pt').onclick = function() { setLang('pt'); };
+            
             syncInputSlider('radius-input', 'radius-slider', 0.2, 30, 0.1, 1);
             syncInputSlider('star-radius-input', 'star-radius-slider', 0.2, 10, 0.01, 2);
             syncInputSlider('impact-input', 'impact-slider', -0.99, 0.99, 0.01, 2);
+            syncInputSlider('ld-input', 'ld-slider', 0, 1, 0.01, 2);
             syncInputSlider('a-input', 'a-slider', 0.01, 5, 0.01, 2);
             syncInputSlider('speed-input', 'speed-slider', 0.25, 10, 0.25, 1);
+            
             document.getElementById('time-slider').addEventListener('input', function() {
                 currentFrame = parseInt(this.value); updateFrame();
             });
-            document.getElementById('limb-darkening').addEventListener('change', function() {
-                if (animationData) { runSimulation(); }
-            });
-            document.getElementById('star-radius-slider').addEventListener('input', function() {
-                const rstar = parseFloat(this.value);
-                document.getElementById('star-type-value').textContent = getStarType(rstar).type;
-            });
-            updateLimbDarkeningLabel();
+            
             document.getElementById('reset-params-btn').onclick = resetParametersToDefault;
             runSimulation();
         });
 
-        // --- FUNÇÕES AUXILIARES DE BOTÕES ---
-        function showOnlyResetButton() {
-            document.getElementById('play-pause-btn').style.display = 'none';
-            document.querySelector(".animation-controls button:not(.play-pause-btn)").style.display = '';
-        }
-        function showPlayPauseAndResetButtons() {
-            document.getElementById('play-pause-btn').style.display = '';
-            document.querySelector(".animation-controls button:not(.play-pause-btn)").style.display = '';
-        }
         function resetParametersToDefault() {
             document.getElementById('radius-slider').value = 1.0;
             document.getElementById('radius-input').value = '1,0';
@@ -871,9 +819,10 @@
             document.getElementById('star-radius-input').value = '1,00';
             document.getElementById('impact-slider').value = 0;
             document.getElementById('impact-input').value = '0,00';
+            document.getElementById('ld-slider').value = 1.0;
+            document.getElementById('ld-input').value = '1,00';
             document.getElementById('a-slider').value = 1.0;
             document.getElementById('a-input').value = '1,00';
-            document.getElementById('limb-darkening').checked = true;
             document.getElementById('speed-slider').value = 1;
             document.getElementById('speed-input').value = '1,0';
             document.getElementById('star-type-value').textContent = getStarType(1.0).type;
