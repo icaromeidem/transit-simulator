@@ -219,8 +219,8 @@
             <td>Sets the planet's semi-major axis in astronomical units. This value, together with the estimated stellar mass, determines the orbital period via Kepler's Third Law and, consequently, the transit duration.</td>
         </tr>
         <tr>
-            <td class="num">Limb Darkening (LD) <em>(6)</em></td>
-            <td>Turns the limb darkening effect on or off in both the light curve calculation and the visual rendering of the star. Compare both conditions to see how the effect rounds off the ingress and egress phases.</td>
+            <td class="num">Limb Darkening  <em>(6)</em></td>
+            <td>Adjust the limb-darkening intensity for the light curve calculation and the visual rendering of the star, varying it continuously from 0 (uniform disk) to 1 (full effect, according to Claret's law). Compare different values ​​to visualize how the intensity of the effect gradually rounds off the ingress and egress phases..</td>
         </tr>
         <tr>
             <td class="num">Reset Parameters <em>(8)</em></td>
@@ -300,7 +300,7 @@
 
     <h3>Limb darkening</h3>
     <p>
-        When LD is enabled, the geometric transit depth is weighted by the local intensity of the stellar
+        When limb-darkening is enabled, the geometric transit depth is weighted by the local intensity of the stellar
         surface, described by the quadratic law of Claret (2000):
     </p>
     <div class="formula-box">
@@ -338,9 +338,9 @@
 
     <div class="activity">
         <strong>Activity 1 — The effect of limb darkening</strong>
-        <p>Set up a system with R☉ = 1, R⊕ = 5, and b = 0. Run the animation with LD enabled and then
-        disabled. Ask students to describe the difference in the shape of the light curve, especially during
-        the ingress and egress phases.</p>
+        <p>Set up a system with R☉ = 1, R⊕ = 5, and b = 0. Run the animation with different limb-darkening values ​​and then
+            with a value of 0. Ask students to describe the difference in the shape of the light curve, especially during
+            the ingress and egress phases.</p>
     </div>
 
     <div class="activity">

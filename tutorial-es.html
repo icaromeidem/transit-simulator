@@ -220,8 +220,8 @@
             <td>Define el semieje orbital del planeta en unidades astronómicas. Este valor, junto con la masa estelar estimada, determina el período orbital mediante la Tercera Ley de Kepler y, en consecuencia, la duración del tránsito.</td>
         </tr>
         <tr>
-            <td class="num">Oscurecimiento de Limbo (LD) <em>(6)</em></td>
-            <td>Activa o desactiva el efecto de oscurecimiento de limbo en el cálculo de la curva de luz y en la renderización visual de la estrella. Compara ambas condiciones para visualizar cómo el efecto redondea las fases de ingreso y egreso.</td>
+            <td class="num">Oscurecimiento de Limbooscurecimiento del limbo <em>(6)</em></td>
+            <td>Ajusta la intensidad del oscurecimiento del limbo en el cálculo de la curva de luz y la representación visual de la estrella, variando continuamente de 0 (disco uniforme) a 1 (efecto completo, según la ley de Claret). Compara diferentes valores para visualizar cómo la intensidad del efecto varía gradualmente en las fases de entrada y salida.</td>
         </tr>
         <tr>
             <td class="num">Restablecer Parámetros <em>(8)</em></td>
@@ -301,7 +301,7 @@
 
     <h3>Oscurecimiento de limbo</h3>
     <p>
-        Cuando el LD está activado, la profundidad geométrica del tránsito se pondera por la intensidad local
+        Cuando el oscurecimiento del limbo está activado, la profundidad geométrica del tránsito se pondera por la intensidad local
         de la superficie estelar, descrita por la ley cuadrática de Claret (2000):
     </p>
     <div class="formula-box">
@@ -341,9 +341,8 @@
 
     <div class="activity">
         <strong>Actividad 1 — El efecto del oscurecimiento de limbo</strong>
-        <p>Configura un sistema con R☉ = 1, R⊕ = 5 y b = 0. Ejecuta la animación con el LD activado y luego
-        desactivado. Pide a los estudiantes que describan la diferencia en la forma de la curva de luz,
-        especialmente en las fases de ingreso y egreso.</p>
+        <p>Configure un sistema con R☉ = 1, R⊕ = 5 y b = 0. Ejecute la animación con diferentes valores de atenuación del limbo y luego con el valor 0. 
+            Pida a los estudiantes que describan la diferencia en la forma de la curva de luz, especialmente en las fases de entrada y salida.</p>
     </div>
 
     <div class="activity">

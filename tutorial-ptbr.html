@@ -219,12 +219,12 @@
             <td>Define o semieixo orbital do planeta em unidades astronômicas. Esse valor, junto à massa estelar estimada, determina o período orbital pela Terceira Lei de Kepler e, consequentemente, a duração do trânsito.</td>
         </tr>
         <tr>
-            <td class="num">Escurecimento de Limbo (LD) <em>(6)</em></td>
-            <td>Ativa ou desativa o efeito de escurecimento de limbo no cálculo da curva de luz e na renderização visual da estrela. Compare as duas condições para visualizar como o efeito arredonda as fases de ingresso e egresso.</td>
+            <td class="num">Escurecimento de Limbo <em>(6)</em></td>
+            <td>Ajuste a intensidade do escurecimento de limbo no cálculo da curva de luz e na renderização visual da estrela, variando continuamente de 0 (disco uniforme) a 1 (efeito completo, segundo a lei de Claret). Compare diferentes valores para visualizar como a intensidade do efeito arredonda gradualmente as fases de ingresso e egresso.</td>
         </tr>
         <tr>
             <td class="num">Reiniciar Parâmetros <em>(8)</em></td>
-            <td>Restaura todos os controles para os valores de referência de um sistema Terra–Sol (R⊕ = 1, R☉ = 1, b = 0, a = 1 UA).</td>
+            <td>Restaura todos os controles para os valores de referência de um sistema Terra–Sol (R⊕ = 1, R☉ = 1, b = 0, a = 1 UA).
         </tr>
     </table>
 
@@ -300,7 +300,7 @@
 
     <h3>Escurecimento de limbo</h3>
     <p>
-        Quando o LD está ativado, a profundidade geométrica do trânsito é ponderada pela intensidade local da
+        Para o escurecimento de limbo, a profundidade geométrica do trânsito é ponderada pela intensidade local da
         superfície estelar, descrita pela lei quadrática de Claret (2000):
     </p>
     <div class="formula-box">
@@ -339,8 +339,8 @@
 
     <div class="activity">
         <strong>Atividade 1 — O efeito do escurecimento de limbo</strong>
-        <p>Configure um sistema com R☉ = 1, R⊕ = 5 e b = 0. Execute a animação com o LD ativado e depois
-        desativado. Peça aos estudantes que descrevam a diferença na forma da curva de luz, especialmente nas
+        <p>Configure um sistema com R☉ = 1, R⊕ = 5 e b = 0. Execute a animação com diferentes valores de escurecimento de limbo e depois
+        com o valor 0. Peça aos estudantes que descrevam a diferença na forma da curva de luz, especialmente nas
         fases de ingresso e egresso.</p>
     </div>
 
