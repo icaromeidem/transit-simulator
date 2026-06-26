@@ -691,6 +691,22 @@
             }
         }
 
+        // --- SUPORTE A SCROLL DO MOUSE NOS SLIDERS ---
+        function enableScrollOnSlider(sliderId) {
+            const slider = document.getElementById(sliderId);
+            slider.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const step = parseFloat(slider.step) || 1;
+                const min = parseFloat(slider.min);
+                const max = parseFloat(slider.max);
+                let value = parseFloat(slider.value);
+                value += (e.deltaY < 0 ? step : -step);
+                value = Math.max(min, Math.min(max, value));
+                slider.value = value;
+                slider.dispatchEvent(new Event('input', { bubbles: true }));
+            }, { passive: false });
+        }
+
         // --- TEXTOS MULTI-IDIOMA ---
         const LANGS = {
             pt: {
@@ -804,6 +820,15 @@
             syncInputSlider('a-input', 'a-slider', 0.01, 5, 0.01, 2);
             syncInputSlider('speed-input', 'speed-slider', 0.25, 10, 0.25, 1);
             
+            enableScrollOnSlider('radius-slider');
+            enableScrollOnSlider('star-radius-slider');
+            enableScrollOnSlider('impact-slider');
+            enableScrollOnSlider('ld-slider');
+            enableScrollOnSlider('a-slider');
+            enableScrollOnSlider('speed-slider');
+            enableScrollOnSlider('time-slider');
+
+
             document.getElementById('time-slider').addEventListener('input', function() {
                 currentFrame = parseInt(this.value); updateFrame();
             });
